@@ -86,4 +86,4 @@ public:
 	}
 };
 
-bool point_in_path(const Point&, const Path&) throw (std::invalid_argument);
+bool point_in_path(const Point&, const Path&) throw (std::domain_error);

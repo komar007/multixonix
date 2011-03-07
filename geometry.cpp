@@ -10,10 +10,12 @@ int helicity(const Point &p1, const Point &p2, const Point &p3)
 	return h < 0 ? -1 : h == 0 ? 0 : 1;
 }
 
-bool point_in_path(const Point &p, const Path &path) throw (invalid_argument)
+bool point_in_path(const Point &p, const Path &path) throw (domain_error)
 {
 	if (!path.closed)
-		throw invalid_argument("open path in point_in_path");
+		throw domain_error("open path in point_in_path");
+	if (path.size() < 3)
+		throw domain_error("degenerated path in point_in_path");
 	int intersections = 0;
 	for (unsigned i = 0; i < path.size(); ++i) {
 		const Point *p1 = &path[i], *p2 = &path[(i+1) % path.size()];
