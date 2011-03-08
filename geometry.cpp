@@ -22,7 +22,8 @@ bool point_in_path(const Point &p, const Path &path) throw (domain_error)
 		if (p1->y > p2->y)
 			swap(p1, p2);
 		int h = helicity(*p1, *p2, p);
-		if (h == 0)
+		if (h == 0 && p1->y <= p.y && p.y <= p2->y &&
+				min(p1->x, p2->x) <= p.x && p.x <= max(p1->x, p2->x))
 			return true;
 		if (p1->y <= p.y && p2->y > p.y && h == -1)
 			++intersections;
