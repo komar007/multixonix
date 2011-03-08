@@ -1,4 +1,4 @@
-CC=g++ -O2 -lm
+CC=g++ -std=c++0x -O2 -lm
 WARN=-Wall -Wextra
 SOURCES=geometry.cpp main.cpp
 

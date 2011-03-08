@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utility.h"
 #include <vector>
 #include <stdexcept>
 
@@ -78,11 +79,31 @@ inline Point operator +(const Point& p, const Vector& v)
 //! Defines a geometric path/shape as a set of points
 class Path : public std::vector<Point> {
 public:
+	typedef cyclic_iterator<std::vector<Point>::iterator> iterator;
+	typedef cyclic_iterator<std::vector<Point>::const_iterator> const_iterator;
 	bool closed;
 	Path(bool _closed = true)
 		: std::vector<Point>()
 		, closed(_closed)
 	{
+	}
+	iterator nth_point(size_t n)
+	{
+		return iterator(std::vector<Point>::begin(), end(),
+				std::vector<Point>::begin() + n);
+	}
+	iterator begin()
+	{
+		return nth_point(0);
+	}
+	const_iterator nth_point(size_t n) const
+	{
+		return const_iterator(std::vector<Point>::begin(), end(),
+				std::vector<Point>::begin() + n);
+	}
+	const_iterator begin() const
+	{
+		return nth_point(0);
 	}
 };
 

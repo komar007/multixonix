@@ -1,4 +1,5 @@
 #include "geometry.h"
+#include "utility.h"
 
 using namespace std;
 
@@ -17,8 +18,8 @@ bool point_in_path(const Point &p, const Path &path) throw (domain_error)
 	if (path.size() < 3)
 		throw domain_error("degenerated path in point_in_path");
 	int intersections = 0;
-	for (unsigned i = 0; i < path.size(); ++i) {
-		const Point *p1 = &path[i], *p2 = &path[(i+1) % path.size()];
+	for (auto i = path.begin(), j = path.nth_point(1); !i.looped; ++i, ++j) {
+		const Point *p1 = &(*i), *p2 = &(*j);
 		if (p1->y > p2->y)
 			swap(p1, p2);
 		int h = helicity(*p1, *p2, p);
