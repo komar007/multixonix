@@ -107,4 +107,5 @@ public:
 	}
 };
 
+double helicity(const Point &p1, const Point &p2, const Point &p3);
 bool point_in_path(const Point&, const Path&) throw (std::domain_error);
