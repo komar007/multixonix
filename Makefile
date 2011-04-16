@@ -1,6 +1,6 @@
 CC=g++ -std=c++0x -O2 -lm
 WARN=-Wall -Wextra
-SOURCES=geometry.cpp main.cpp
+SOURCES=geometry.cpp collision.cpp main.cpp
 
 all: dep
 	make main
@@ -15,7 +15,7 @@ dep:
 
 -include Makefile.dep
 
-main: geometry.o main.o
+main: geometry.o main.o collision.o
 	@echo LINK $@
 	@$(CC) -o $@ $^
 
