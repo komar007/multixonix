@@ -18,7 +18,7 @@ public:
 		int passed = 0;
 		for (auto i = testsuites.begin(), num = 1; i != testsuites.end(); ++i, ++num) {
 			TestSuite &ts = **i;
-			std::cout << "[" << num << "/" << testsuites.size() << "] " << ts.name << ": ";
+			std::cout << "[" << num << "/" << testsuites.size() << "] " << ts.name << ":";
 			ts.prepare();
 			ts.run_tests(std::cout);
 			if (ts.errors.size() == 0) {

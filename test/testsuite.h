@@ -36,10 +36,12 @@ class Test {
 private:
 	std::string name;
 	test_fun method;
+	int npassed;
 public:
 	Test(const std::string &_name, test_fun _method)
 		: name(_name)
 		, method(_method)
+		, npassed(0)
 	{
 	}
 	friend class TestSuite;
@@ -52,21 +54,22 @@ private:
 	std::string name;
 	std::vector<Error> errors;
 	std::vector<Test> tests;
+	std::vector<Test>::iterator cur_test;
 	void run_tests(std::ostream& logger)
 	{
-		for (auto i = tests.begin(); i != tests.end(); ++i) {
+		for (cur_test = tests.begin(); cur_test != tests.end(); ++cur_test) {
 			bool was_error = false;
 			try {
-				(this->*(i->method))();
+				(this->*(cur_test->method))();
 			} catch (Error e) {
-				e.testname = i->name;
+				e.testname = cur_test->name;
 				errors.push_back(e);
 				was_error = true;
 			}
 			if (was_error)
-				logger << "F";
+				logger << " F";
 			else
-				logger << ".";
+				logger << std::string(" ") + std::string(cur_test->npassed, '.');
 		}
 	}
 protected:
@@ -79,6 +82,7 @@ protected:
 	{
 		if (!condition)
 			throw Error(fail_message, lineno, cond_str);
+		++cur_test->npassed;
 	}
 	template <typename T, typename U>
 	void assert_eq_impl(T a, U b, int lineno, const std::string &cond_str)
@@ -88,10 +92,12 @@ protected:
 			ss << a;
 			throw Error(std::string("wrong result, got: ") + ss.str(), lineno, cond_str);
 		}
+		++cur_test->npassed;
 	}
 public:
 	TestSuite(const std::string &_name)
 		: name(_name)
+		, cur_test(NULL)
 	{
 	}
 	virtual void prepare()
