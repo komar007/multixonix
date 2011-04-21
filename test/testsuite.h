@@ -66,10 +66,9 @@ private:
 				errors.push_back(e);
 				was_error = true;
 			}
+			logger << std::string(" ") + std::string(cur_test->npassed, '.');
 			if (was_error)
-				logger << " F";
-			else
-				logger << std::string(" ") + std::string(cur_test->npassed, '.');
+				logger << "F";
 		}
 	}
 protected:
@@ -91,6 +90,14 @@ protected:
 			std::stringstream ss;
 			ss << a;
 			throw Error(std::string("wrong result, got: ") + ss.str(), lineno, cond_str);
+		}
+		++cur_test->npassed;
+	}
+	void assert_eq_impl(bool a, bool b, int lineno, const std::string &cond_str)
+	{
+		if (!(a == b)) {
+			std::string res = a ? "true" : "false";
+			throw Error(std::string("wrong result, got: ") + res, lineno, cond_str);
 		}
 		++cur_test->npassed;
 	}
