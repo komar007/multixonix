@@ -18,7 +18,7 @@ bool point_in_path(const Point &p, const Path &path) throw (domain_error)
 	if (path.size() < 3)
 		throw domain_error("degenerated path in point_in_path");
 	int intersections = 0;
-	for (auto i = path.vector<Point>::begin(), j = path.nth_point(1); i != path.end(); ++i, ++j) {
+	for (auto i = path.begin(), j = path.nth_point(1); i != path.end(); ++i, ++j) {
 		const Point *p1 = &(*i), *p2 = &(*j);
 		if (p1->y > p2->y)
 			swap(p1, p2);

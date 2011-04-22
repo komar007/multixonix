@@ -89,8 +89,13 @@ public:
 	}
 	iterator nth_point(size_t n)
 	{
-		return iterator(std::vector<Point>::begin(), end(),
+		return iterator(std::vector<Point>::begin(),
+				std::vector<Point>::end(),
 				std::vector<Point>::begin() + n);
+	}
+	iterator end()
+	{
+		return nth_point(size());
 	}
 	iterator begin()
 	{
@@ -98,8 +103,13 @@ public:
 	}
 	const_iterator nth_point(size_t n) const
 	{
-		return const_iterator(std::vector<Point>::begin(), end(),
+		return const_iterator(std::vector<Point>::begin(),
+				std::vector<Point>::end(),
 				std::vector<Point>::begin() + n);
+	}
+	const_iterator end() const
+	{
+		return nth_point(size());
 	}
 	const_iterator begin() const
 	{
