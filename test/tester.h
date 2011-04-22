@@ -25,7 +25,7 @@ public:
 				std::cout << " passed";
 				++passed;
 			} else {
-				std::cout << " " << ts.errors.size() << "/" << ts.tests.size() << " failed";
+				std::cout << " " << ts.errors.size() << "/" << ts.tests.size() << " tests failed";
 			}
 			std::cout << std::endl;
 			for (auto e = ts.errors.begin(); e != ts.errors.end(); ++e)

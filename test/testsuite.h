@@ -25,7 +25,7 @@ struct Error {
 
 std::ostream& operator<<(std::ostream &os, const Error &e)
 {
-	os << e.testname << " failed: [" << e.lineno << "] " << e.cond_str << " -> " << e.msg;
+	os << "test \"" << e.testname << "\" failed: [" << e.lineno << "] assertion " << e.cond_str << " -> " << e.msg;
 	return os;
 }
 
