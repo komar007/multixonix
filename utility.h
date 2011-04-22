@@ -28,7 +28,9 @@ public:
 	}
 	bool operator==(const cyclic_iterator<It>& o) const
 	{
-		return  i == o.i;
+		return  i == o.i ||
+			(o.i == it_end && i == it_beg) ||	// o is end
+			(i == o.it_end && o.i == o.it_beg);	// *this is end
 	}
 	bool operator!=(const cyclic_iterator<It>& o) const
 	{
