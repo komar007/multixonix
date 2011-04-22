@@ -3,6 +3,12 @@
 #include <stdexcept>
 #include <iterator>
 
+//! \brief Iterator wrapper that comes back to the beginning of a collection
+//!
+//! it_beg is the beginning of the collection, it_end - one element past the
+//! end, when i == it_end, i is automatically reset to it_beg.
+//! To make end-of-collection checking possible, there is a special end
+//! iterator: one where i == it_end.
 template <typename It>
 class cyclic_iterator {
 private:
