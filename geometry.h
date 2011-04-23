@@ -29,6 +29,27 @@ public:
 	}
 };
 
+class Location {
+public:
+	int x;
+	int y;
+
+	Location()
+		: x(0)
+		, y(0)
+	{
+	}
+	Location(int _x, int _y)
+		: x(_x)
+		, y(_y)
+	{
+	}
+	bool operator==(const Location& o)
+	{
+		return x == o.x && y == o.y;
+	}
+};
+
 //! \brief A 2D vector
 //!
 //! A basic data structure representing a vector in a 2-dimensional space.
