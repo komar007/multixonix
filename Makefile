@@ -1,9 +1,9 @@
 INCLUDE=-I.
 CC=g++ -std=c++0x -O2 -lm $(INCLUDE)
 WARN=-Wall -Wextra
-SOURCES=geometry.cpp collision.cpp main.cpp test/run_tests.cpp
+SOURCES=geometry.cpp collision.cpp main.cpp detector.cpp test/run_tests.cpp
 
-OBJS=geometry.o collision.o
+OBJS=geometry.o collision.o detector.o
 
 all: dep
 	make main
