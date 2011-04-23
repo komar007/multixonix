@@ -77,11 +77,14 @@ inline Point operator +(const Point& p, const Vector& v)
 //! \brief Geometric path/shape
 //!
 //! Defines a geometric path/shape as a set of points
-class Path : public std::vector<Point> {
+class Path : private std::vector<Point> {
 public:
 	typedef cyclic_iterator<std::vector<Point>::iterator> iterator;
 	typedef cyclic_iterator<std::vector<Point>::const_iterator> const_iterator;
 	bool closed;
+	using std::vector<Point>::size;
+	using std::vector<Point>::push_back;
+	using std::vector<Point>::reserve;
 	Path(bool _closed = true)
 		: std::vector<Point>()
 		, closed(_closed)
