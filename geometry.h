@@ -2,6 +2,9 @@
 
 #include "utility.h"
 #include <vector>
+#include <unordered_map>
+#include <limits>
+#include <cmath>
 #include <stdexcept>
 
 //! @file
@@ -44,11 +47,21 @@ public:
 		, y(_y)
 	{
 	}
-	bool operator==(const Location& o)
+	bool operator==(const Location& o) const
 	{
 		return x == o.x && y == o.y;
 	}
+
+	class hash : private std::hash<long> {
+	public:
+		size_t operator()(const Location& loc) const
+		{
+			return std::hash<long>::operator()(
+					(long)loc.y * std::numeric_limits<int>::max() + loc.x);
+		}
+	};
 };
+
 
 //! \brief A 2D vector
 //!
@@ -79,6 +92,10 @@ public:
 	{
 		return Vector(dx - o.dx, dy - o.dy);
 	}
+	double length() const
+	{
+		return hypot(dx, dy);
+	}
 };
 
 //! @name Basic binary operations
@@ -92,6 +109,11 @@ inline Vector operator -(const Point& l, const Point& r)
 inline Point operator +(const Point& p, const Vector& v)
 {
 	return Point(p.x + v.dx, p.y + v.dy);
+}
+//! Translate point by minus vector
+inline Point operator -(const Point& p, const Vector& v)
+{
+	return Point(p.x - v.dx, p.y - v.dy);
 }
 //@}
 
@@ -141,5 +163,6 @@ public:
 	}
 };
 
-double helicity(const Point &p1, const Point &p2, const Point &p3);
+double turning_determinant(const Point &p1, const Point &p2, const Point &p3);
 bool point_in_path(const Point&, const Path&) throw (std::domain_error);
+double line_point_distance(const Point& l1, const Point& l2, const Point& p);
