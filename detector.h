@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-class Detector : private std::unordered_multimap<Location, Path::iterator, Location::hash> {
+class Detector : private std::unordered_multimap<Location, Path::iterator> {
 private:
 	const Path& p;
 public:
@@ -18,7 +18,7 @@ public:
 	Point to_point(const Location& l) const;
 };
 
-class dfs_painter {
+class BfsPainter {
 private:
 	const Detector& detector;
 	Point segment_a,
@@ -27,17 +27,17 @@ private:
 	         loc_end;
 	int min_x, max_x;
 	std::deque<Location> queue;
-	std::unordered_set<Location, Location::hash> visited;
+	std::unordered_set<Location> visited;
 	double dist;
 	Location next();
 public:
-	dfs_painter(const Point& a, const Point& b, const Detector& _detector);
+	BfsPainter(const Point& a, const Point& b, const Detector& _detector);
 
-	class iterator {
+	class iterator : public std::iterator<std::input_iterator_tag, Location> {
 	private:
-		dfs_painter* dp;
+		BfsPainter* dp;
 	public:
-		iterator(dfs_painter* _dp)
+		iterator(BfsPainter* _dp)
 			: dp(_dp)
 		{
 		}

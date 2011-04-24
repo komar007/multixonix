@@ -21,7 +21,7 @@ Point Detector::to_point(const Location& l) const
 		Vector(block_size/2, block_size/2);
 }
 
-dfs_painter::dfs_painter(const Point& a, const Point& b, const Detector& _detector)
+BfsPainter::BfsPainter(const Point& a, const Point& b, const Detector& _detector)
 	: detector(_detector)
 	, segment_a(a)
 	, segment_b(b)
@@ -41,10 +41,8 @@ dfs_painter::dfs_painter(const Point& a, const Point& b, const Detector& _detect
 	visited.insert(loc_beg);
 }
 
-Location dfs_painter::next()
+Location BfsPainter::next()
 {
-	if (queue.empty())
-		throw std::out_of_range("next() called on dfs_painter with empty queue");
 	Location ret = queue.front();
 	queue.pop_front();
 	Location nb;

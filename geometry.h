@@ -52,7 +52,11 @@ public:
 		return x == o.x && y == o.y;
 	}
 
-	class hash : private std::hash<long> {
+};
+
+namespace std {
+	template <>
+	class hash<Location> : private std::hash<long> {
 	public:
 		size_t operator()(const Location& loc) const
 		{
@@ -61,7 +65,6 @@ public:
 		}
 	};
 };
-
 
 //! \brief A 2D vector
 //!
