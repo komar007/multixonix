@@ -3,10 +3,16 @@
 using namespace std;
 
 Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
-	: p(_p)
+	: hash()
+	, p(_p)
 	, offset(_offset)
 	, block_size(_block_size)
 {
+	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j) {
+		BfsPainter pt(*i, *j, *this);
+		for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
+			hash.insert(hash_type::value_type(*l, i));
+	}
 }
 
 Location Detector::to_location(const Point& p) const

@@ -7,13 +7,16 @@
 #include <algorithm>
 #include <stdexcept>
 
-class Detector : private std::unordered_multimap<Location, Path::iterator> {
+class Detector {
 private:
+	typedef std::unordered_multimap<Location, Path::const_iterator> hash_type;
+	hash_type hash;
 	const Path& p;
 public:
 	const Vector offset;
 	const double block_size;
 	Detector(const Path& _p, const Vector& _offset, double _block_size);
+	const hash_type& get_hash() { return hash; }
 	Location to_location(const Point& p) const;
 	Point to_point(const Location& l) const;
 };
