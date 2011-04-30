@@ -15,6 +15,19 @@ std::ostream& operator<<(std::ostream& o, const Location& loc)
 	return o;
 }
 
+std::ostream& operator<<(std::ostream& o, const Point& p)
+{
+	o << "(" << p.x << ", " << p.y << ")";
+	return o;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& o, const cyclic_iterator<T>& i)
+{
+	o << "it[" << *i << "]";
+	return o;
+}
+
 template <typename T, typename H>
 bool operator==(const std::unordered_set<T, H>& s1, const std::unordered_set<T, H>& s2)
 {

@@ -3,6 +3,11 @@
 
 using namespace std;
 
+bool operator==(const Point& a, const Point& b)
+{
+	return a.x == b.x && a.y == b.y;
+}
+
 double turning_determinant(const Point &p1, const Point &p2, const Point &p3)
 {
 	double h = p1.x*p2.y - p2.x*p1.y +
