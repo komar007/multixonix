@@ -41,3 +41,9 @@ bool point_in_path(const Point &p, const Path &path) throw (domain_error)
 	}
 	return intersections % 2 == 1;
 }
+
+bool point_in_rect(const Point& p, const Point& r1, const Point& r2)
+{
+	return min(r1.x, r2.x) <= p.x && p.x <= max(r1.x, r2.x) &&
+		min(r1.y, r2.y) <= p.y && p.y <= max(r1.y, r2.y);
+}
