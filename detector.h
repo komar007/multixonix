@@ -24,14 +24,12 @@ public:
 class BfsPainter {
 private:
 	const Detector& detector;
-	Point segment_a,
-	      segment_b;
-	Location loc_beg,
-	         loc_end;
-	int min_x, max_x;
+	const Point segment_a,
+	            segment_b;
+	const Point rect_p1, rect_p2;
+	double dist;
 	std::deque<Location> queue;
 	std::unordered_set<Location> visited;
-	double dist;
 	Location next();
 public:
 	BfsPainter(const Point& a, const Point& b, const Detector& _detector);

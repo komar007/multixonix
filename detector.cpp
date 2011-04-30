@@ -29,20 +29,19 @@ Point Detector::to_point(const Location& l) const
 
 BfsPainter::BfsPainter(const Point& a, const Point& b, const Detector& _detector)
 	: detector(_detector)
-	, segment_a(a)
-	, segment_b(b)
+	, segment_a(a.y <= b.y ? a : b)
+	, segment_b(a.y <= b.y ? b : a)
+	, rect_p1(min(segment_a.x, segment_b.x) - detector.block_size/2,
+	          segment_a.y - detector.block_size/2)
+	, rect_p2(max(segment_a.x, segment_b.x) + detector.block_size/2,
+	          segment_b.y + detector.block_size/2)
 {
-	if (segment_a.y > segment_b.y)
-		swap(segment_a, segment_b);
-	Vector hypotenuse = segment_b - segment_a;
-	double len = hypotenuse.length();
-	double sin = hypotenuse.dy / len,
-	       cos = abs(hypotenuse.dx) / len;
+	const Vector hypotenuse = segment_b - segment_a;
+	const double len = hypotenuse.length();
+	const double sin = hypotenuse.dy / len;
+	const double cos = abs(hypotenuse.dx) / len;
 	dist = detector.block_size / 2 * (sin + cos);
-	loc_beg = detector.to_location(segment_a);
-	loc_end = detector.to_location(segment_b);
-	max_x = max(loc_beg.x, loc_end.x);
-	min_x = min(loc_beg.x, loc_end.x);
+	Location loc_beg = detector.to_location(segment_a);
 	queue.push_back(loc_beg);
 	visited.insert(loc_beg);
 }
@@ -52,13 +51,13 @@ Location BfsPainter::next()
 	Location ret = queue.front();
 	queue.pop_front();
 	Location nb;
-	for (nb.y = ret.y; nb.y <= ret.y + 1; ++nb.y) {
+	for (nb.y = ret.y - 1; nb.y <= ret.y + 1; ++nb.y) {
 		for (nb.x = ret.x - 1; nb.x <= ret.x + 1; ++nb.x) {
-			if (nb.y > loc_end.y || nb.x < min_x || nb.x > max_x ||
-					visited.find(nb) != visited.end())
+			const Point center = detector.to_point(nb);
+			if (!point_in_rect(center, rect_p1, rect_p2) || visited.find(nb) != visited.end())
 				continue;
 			visited.insert(nb);
-			if (line_point_distance(segment_a, segment_b, detector.to_point(nb)) <= dist)
+			if (line_point_distance(segment_a, segment_b, center) <= dist)
 				queue.push_back(nb);
 		}
 	}
