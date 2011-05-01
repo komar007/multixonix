@@ -30,9 +30,11 @@ public:
 		, y(_y)
 	{
 	}
+	bool operator==(const Point& o)
+	{
+		return x == o.x && y == o.y;
+	}
 };
-
-bool operator==(const Point& a, const Point& b);
 
 class Location {
 public:
@@ -173,6 +175,5 @@ public:
 };
 
 double turning_determinant(const Point &p1, const Point &p2, const Point &p3);
-bool point_in_path(const Point&, const Path&) throw (std::domain_error);
 double line_point_distance(const Point& l1, const Point& l2, const Point& p);
 bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
