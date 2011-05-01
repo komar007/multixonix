@@ -10,11 +10,15 @@ Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	, offset(_offset)
 	, block_size(_block_size)
 {
-	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j) {
-		BfsPainter pt(*i, *j, *this);
-		for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
-			hash.insert(hash_type::value_type(*l, i));
-	}
+	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j)
+		add_segment(i);
+}
+
+void Detector::add_segment(const Path::const_iterator& i)
+{
+	BfsPainter pt(*i, *(i+1), *this);
+	for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
+		hash.insert(hash_type::value_type(*l, i));
 }
 
 namespace std {

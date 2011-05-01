@@ -16,6 +16,7 @@ public:
 	const Vector offset;
 	const double block_size;
 	Detector(const Path& _p, const Vector& _offset, double _block_size);
+	void add_segment(const Path::const_iterator& pit);
 	int segment_intersections(const Point& p1, const Point& p2);
 	const hash_type& get_hash() { return hash; }
 	Location to_location(const Point& p) const;
