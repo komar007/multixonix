@@ -16,6 +16,13 @@ private:
 	It it_end;
 	It i;
 	short cycles;
+	cyclic_iterator(It beg, It end, It start, short _cycles)
+		: it_beg(beg)
+		, it_end(end)
+		, i(start)
+		, cycles(_cycles)
+	{
+	}
 public:
 	cyclic_iterator(It beg, It end, It start)
 		: it_beg(beg)
@@ -50,7 +57,11 @@ public:
 	//! Iterator move. Does not support cycling!
 	cyclic_iterator operator+(size_t o) const
 	{
-		return cyclic_iterator(it_beg, it_end, i+o);
+		It it = i + o;
+		if (it == it_end)
+			return cyclic_iterator(it_beg, it_end, it_beg, cycles + 1);
+		else
+			return cyclic_iterator(it_beg, it_end, it);
 	}
 };
 
@@ -59,5 +70,20 @@ struct dereference {
 	auto operator()(const It& it) -> decltype(*it)
 	{
 		return *it;
+	}
+};
+
+template <typename T1, typename T2>
+struct take_second {
+	const T2& operator()(const std::pair<T1, T2>& p)
+	{
+		return p.second;
+	}
+};
+template <typename T1, typename T2>
+struct take_first {
+	const T1& operator()(const std::pair<T1, T2>& p)
+	{
+		return p.first;
 	}
 };
