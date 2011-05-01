@@ -76,5 +76,20 @@ public:
 		assert_eq(d.segment_intersections(Point(7, 3), Point(5, 1)), 0);
 		assert_eq(d.segment_intersections(Point(8, 1), Point(8, 6)), 2);
 		assert_eq(d.segment_intersections(Point(8, 6), Point(8, 1)), 2);
+
+		Path o(false);
+		o.push_back(p26);
+		o.push_back(p1);
+		o.push_back(p2);
+		o.push_back(p3);
+		Path c(true);
+		c.push_back(p26);
+		c.push_back(p1);
+		c.push_back(p2);
+		c.push_back(p3);
+		Detector od(o, Vector(.0, .0), 1.0);
+		Detector cd(c, Vector(.0, .0), 1.0);
+		assert_eq(cd.segment_intersections(Point(6, 1), Point(0, 4)), 2);
+		assert_eq(od.segment_intersections(Point(6, 1), Point(0, 4)), 1);
 	}
 };

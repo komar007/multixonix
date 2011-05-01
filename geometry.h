@@ -55,7 +55,6 @@ public:
 	{
 		return x == o.x && y == o.y;
 	}
-
 };
 
 namespace std {
@@ -198,7 +197,7 @@ public:
 	}
 	const_iterator end() const
 	{
-		return nth_point(size());
+		return nth_point(closed ? size() : size() - 1);
 	}
 	const_iterator begin() const
 	{
