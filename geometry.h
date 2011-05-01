@@ -129,44 +129,76 @@ inline Point operator -(const Point& p, const Vector& v)
 //! Defines a geometric path/shape as a set of points
 class Path : private std::vector<Point> {
 public:
-	typedef cyclic_iterator<std::vector<Point>::iterator> iterator;
-	typedef cyclic_iterator<std::vector<Point>::const_iterator> const_iterator;
 	bool closed;
 	using std::vector<Point>::size;
 	using std::vector<Point>::push_back;
 	using std::vector<Point>::reserve;
+
+	class cyclic_iterator {
+	private:
+		const std::vector<Point>& p;
+		int i;
+		short cycles;
+		cyclic_iterator(const std::vector<Point>& _p, int start, short _cycles)
+			: p(_p)
+			, i(start)
+			, cycles(_cycles)
+		{
+		}
+	public:
+		cyclic_iterator(const std::vector<Point>& _p, int start)
+			: p(_p)
+			, i(start)
+			, cycles(0)
+		{
+		}
+		cyclic_iterator& operator++()
+		{
+			if (++i == (int)p.size()) {
+				i = 0;
+				++cycles;
+			}
+			return *this;
+		}
+		const Point& operator*() const
+		{
+			return p[i];
+		}
+		bool operator==(const cyclic_iterator& o) const
+		{
+			return  i == o.i ||
+				(o.i == (int)p.size() && i == 0 && cycles > 0) ||   	// o is end
+				(i == (int)o.p.size() && o.i == 0 && o.cycles > 0);	// *this is end
+		}
+		bool operator!=(const cyclic_iterator& o) const
+		{
+			return !operator==(o);
+		}
+
+		//! Iterator move.
+		cyclic_iterator operator+(size_t o) const
+		{
+			int it = i + o;
+			if (it >= (int)p.size())
+				return cyclic_iterator(p, it - p.size(), cycles + 1);
+			else
+				return cyclic_iterator(p, it);
+		}
+	};
+	typedef cyclic_iterator const_iterator;
+
 	Path(bool _closed = true)
 		: std::vector<Point>()
 		, closed(_closed)
 	{
 	}
-	iterator nth_point(size_t n)
-	{
-		return iterator(std::vector<Point>::begin(),
-				std::vector<Point>::end(),
-				std::vector<Point>::begin() + n);
-	}
-	iterator end()
-	{
-		return iterator(std::vector<Point>::begin(),
-				std::vector<Point>::end(),
-				std::vector<Point>::end());
-	}
-	iterator begin()
-	{
-		return nth_point(0);
-	}
 	const_iterator nth_point(size_t n) const
 	{
-		return const_iterator(std::vector<Point>::begin(),
-				std::vector<Point>::end(),
-				std::vector<Point>::begin() + n);
+		return const_iterator(*this, n);
 	}
 	const_iterator end() const
 	{
-		return const_iterator(std::vector<Point>::begin(),
-				std::vector<Point>::end(),
-				std::vector<Point>::end());
+		return nth_point(size());
 	}
 	const_iterator begin() const
 	{

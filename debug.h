@@ -23,13 +23,6 @@ inline std::ostream& operator<<(std::ostream& o, const Point& p)
 	return o;
 }
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& o, const cyclic_iterator<T>& i)
-{
-	o << "it[" << *i << "]";
-	return o;
-}
-
 template <typename T, typename H>
 inline bool operator==(const std::unordered_set<T, H>& s1, const std::unordered_set<T, H>& s2)
 {
