@@ -1,4 +1,6 @@
 #include "detector.h"
+#include "collision.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -13,6 +15,38 @@ Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 		for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
 			hash.insert(hash_type::value_type(*l, i));
 	}
+}
+
+namespace std {
+	template <>
+	class hash<Path::const_iterator> : private std::hash<unsigned long> {
+	public:
+		size_t operator()(const Path::const_iterator& it) const
+		{
+			return std::hash<unsigned long>::operator()(reinterpret_cast<unsigned long>(&*it));
+		}
+	};
+};
+
+typedef take_second<Location, Path::const_iterator> take_iter;
+
+int Detector::segment_intersections(const Point& s1, const Point& s2)
+{
+	BfsPainter pt(s1, s2, *this);
+	unordered_set<Path::const_iterator> p_iterators;
+	insert_iterator<unordered_set<Path::const_iterator>> inserter(p_iterators, p_iterators.end());
+	for (BfsPainter::iterator b = pt.begin(); b != pt.end(); ++b) {
+		auto range = hash.equal_range(*b);
+		transform(range.first, range.second, inserter, take_iter());
+	}
+	int nintersections = 0;
+	for (auto i = p_iterators.begin(); i != p_iterators.end(); ++i) {
+		const Path::const_iterator& p1 = *i;
+		const Path::const_iterator& p2 = *i + 1;
+		if (segment_path_segment_collision(s1, s2, *p1, *p2))
+			++nintersections;
+	}
+	return nintersections;
 }
 
 Location Detector::to_location(const Point& p) const
