@@ -10,7 +10,7 @@ echo -e 'int main() {'
 echo -e '\tTester tester;'
 n=0
 for ts in $testsuites; do
-	clsname=`grep 'class' $ts | head -n 1 | sed -e 's/class \([a-zA-Z0-9_]\+\) : public TestSuite {/\1/'`
+	clsname=`grep 'class' $ts | tail -n 1 | sed -e 's/class \([a-zA-Z0-9_]\+\) : public TestSuite {/\1/'`
 	echo -e '\t'$clsname t$n';'
 	echo -e '\ttester.add_suite(t'$n');'
 	n=$[$n+1]
