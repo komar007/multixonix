@@ -1,5 +1,8 @@
 #pragma once
 
+//! @file
+//! \brief Useful standard declarations
+
 #include <stdexcept>
 #include <iterator>
 

@@ -36,6 +36,9 @@ public:
 	}
 };
 
+//! \brief A 2D integer point
+//!
+//! A basic data structure representing a pair of integer coordinates
 class Location {
 public:
 	int x;
@@ -133,6 +136,11 @@ public:
 	using std::vector<Point>::push_back;
 	using std::vector<Point>::reserve;
 
+	//! \brief Path iterator
+	//!
+	//! Iterator used to iterate over all points of a path, which comes
+	//! back to the beginning and never goes out of range. This allows
+	//! easy iteration over all edges using two iterators.
 	class cyclic_iterator {
 	private:
 		const std::vector<Point>& p;
@@ -205,6 +213,15 @@ public:
 	}
 };
 
+//! \brief Counts double signed area of a triangle described by three points
+//!
+//! @return positive value, if points p1, p2, p3 turn clockwise, negative if
+//! they turn counter-clockwise, and 0 if points are colinear
 double turning_determinant(const Point &p1, const Point &p2, const Point &p3);
+
+//! Distance between line and point;
 double line_point_distance(const Point& l1, const Point& l2, const Point& p);
+
+//! Checks if point p is inside a rectangle, whose upper-left corner is r1 and
+//! lower-right corner is r2
 bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
