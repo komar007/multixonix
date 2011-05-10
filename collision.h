@@ -5,6 +5,10 @@
 
 #include "geometry.h"
 
+//! Checks if point p is inside a rectangle, whose upper-left corner is r1 and
+//! lower-right corner is r2
+bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
+
 //! \brief Tests intersection between line and segment
 //!
 //! @return true if there is exactly one point of intersection, false otherwise

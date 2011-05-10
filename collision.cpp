@@ -1,8 +1,13 @@
 #include "collision.h"
 
+bool point_in_rect(const Point& p, const Point& r1, const Point& r2)
+{
+	return r1.x <= p.x && p.x <= r2.x && r1.y <= p.y && p.y <= r2.y;
+}
+
 bool line_segment_collision(const Point &l1, const Point &l2, const Point &s1, const Point &s2)
 {
-	int h1 = turning_determinant(l1, l2, s1);
+	const int h1 = turning_determinant(l1, l2, s1);
 	return h1 == 0 || h1 * turning_determinant(l1, l2, s2) < 0;
 }
 

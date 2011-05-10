@@ -55,7 +55,7 @@ int Detector::segment_intersections(const Point& s1, const Point& s2)
 
 Location Detector::to_location(const Point& p) const
 {
-	Point rel_p = p - offset;
+	const Point rel_p = p - offset;
 	return Location(rel_p.x / block_size, rel_p.y / block_size);
 }
 
@@ -86,7 +86,7 @@ BfsPainter::BfsPainter(const Point& a, const Point& b, const Detector& _detector
 
 Location BfsPainter::next()
 {
-	Location ret = queue.front();
+	const Location ret = queue.front();
 	queue.pop_front();
 	Location nb;
 	for (nb.y = ret.y - 1; nb.y <= ret.y + 1; ++nb.y) {

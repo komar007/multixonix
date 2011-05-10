@@ -185,7 +185,7 @@ public:
 		//! Iterator move.
 		cyclic_iterator operator+(size_t o) const
 		{
-			int it = i + o;
+			const int it = i + o;
 			if (it >= (int)p.size())
 				return cyclic_iterator(p, it - p.size(), cycles + 1);
 			else
@@ -221,7 +221,3 @@ double turning_determinant(const Point &p1, const Point &p2, const Point &p3);
 
 //! Distance between line and point;
 double line_point_distance(const Point& l1, const Point& l2, const Point& p);
-
-//! Checks if point p is inside a rectangle, whose upper-left corner is r1 and
-//! lower-right corner is r2
-bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
