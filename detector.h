@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+class BfsPainter;
+
 //! \brief Collision detection structure
 //!
 //! Structure used to quickly detect collisions between a path and a segment
@@ -18,15 +20,19 @@ private:
 	typedef std::unordered_multimap<Location, Path::const_iterator> hash_type;
 	hash_type hash;
 	const Path& p;
-	void add_segment(const Path::const_iterator& pit);
-public:
 	const Vector offset;
 	const double block_size;
+	Rect box;
+
+	void update_bounding_box(const Path::const_iterator& pit);
+public:
+	void add_segment(const Path::const_iterator& pit);
 	Detector(const Path& _p, const Vector& _offset, double _block_size);
 	int segment_intersections(const Point& p1, const Point& p2);
 	const hash_type& get_hash() { return hash; }
 	Location to_location(const Point& p) const;
 	Point to_point(const Location& l) const;
+	friend class BfsPainter;
 };
 
 //! \brief A BFS rasterizer state machine

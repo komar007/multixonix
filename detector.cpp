@@ -4,21 +4,41 @@
 
 using namespace std;
 
+const double pinf =  numeric_limits<double>::infinity(),
+             ninf = -numeric_limits<double>::infinity();
+
 Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	: hash()
 	, p(_p)
 	, offset(_offset)
 	, block_size(_block_size)
+	, box(Point(pinf, pinf), Point(ninf, ninf))
 {
-	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j)
+	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j) {
 		add_segment(i);
+		update_bounding_box(i);
+	}
+	if (!p.closed && p.size() > 0)
+		update_bounding_box(p.nth_point(p.size()-1));
 }
 
-void Detector::add_segment(const Path::const_iterator& i)
+void Detector::add_segment(const Path::const_iterator& pit)
 {
-	BfsPainter pt(*i, *(i+1), *this);
+	BfsPainter pt(*pit, *(pit+1), *this);
 	for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
-		hash.insert(hash_type::value_type(*l, i));
+		hash.insert(hash_type::value_type(*l, pit));
+}
+
+void Detector::update_bounding_box(const Path::const_iterator& pit)
+{
+	if (pit->x < box.first.x)
+		box.first.x = pit->x;
+	else if (pit->x > box.second.x)
+		box.second.x = pit->x;
+	if (pit->y < box.first.y)
+		box.first.y = pit->y;
+	else if (pit->y > box.second.y)
+		box.second.y = pit->y;
 }
 
 namespace std {

@@ -126,6 +126,8 @@ inline Point operator -(const Point& p, const Vector& v)
 }
 //@}
 
+typedef std::pair<Point, Point> Rect;
+
 //! \brief Geometric path/shape
 //!
 //! Defines a geometric path/shape as a set of points
@@ -170,6 +172,10 @@ public:
 		const Point& operator*() const
 		{
 			return p[i];
+		}
+		const Point* operator->() const
+		{
+			return &p[i];
 		}
 		bool operator==(const cyclic_iterator& o) const
 		{
