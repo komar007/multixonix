@@ -13,11 +13,14 @@ public:
 };
 
 class Watcher : public Observer<bool> {
+public:
+	const State *last_state;
 private:
 	std::ostream& ostr;
 	virtual void update(const Observable<bool>& obj, const bool& msg)
 	{
 		const State& s = dynamic_cast<const State&>(obj);
+		last_state = &s;
 		ostr << msg << ", o.i = " << s.i << " ";
 	}
 public:
@@ -45,6 +48,7 @@ public:
 		s.attach(w);
 		s.change(7);
 		s.change(0);
+		assert_eq(w.last_state, &s);
 		assert_eq(str.str(), "1, o.i = 7 0, o.i = 0 ");
 	}
 };
