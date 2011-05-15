@@ -1,9 +1,15 @@
 INCLUDE=-I.
 CC=g++ -std=c++0x -O2 -lm $(INCLUDE)
 WARN=-Wall -Wextra
-SOURCES=geometry.cpp collision.cpp main.cpp detector.cpp test/run_tests.cpp
+SOURCES=geometry.cpp\
+	collision.cpp\
+	main.cpp\
+	detector.cpp\
+	shapemanager.cpp\
+	xonix.cpp\
+	test/run_tests.cpp
 
-OBJS=geometry.o collision.o detector.o
+OBJS=geometry.o collision.o detector.o shapemanager.o xonix.o
 
 all: dep
 	make main

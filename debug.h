@@ -1,5 +1,6 @@
 #pragma once
 
+#include "shapemanager.h"
 #include <unordered_set>
 #include <iterator>
 
@@ -20,6 +21,19 @@ inline std::ostream& operator<<(std::ostream& o, const Location& loc)
 inline std::ostream& operator<<(std::ostream& o, const Point& p)
 {
 	o << "(" << p.x << ", " << p.y << ")";
+	return o;
+}
+
+inline std::ostream& operator<<(std::ostream& o, const ShapeMessageType& m)
+{
+	switch (m) {
+	case CREATED:
+		o << "CREATED"; break;
+	case DESTROYED:
+		o << "DESTROYED"; break;
+	case DUMMY:
+		o << "DUMMY"; break;
+	}
 	return o;
 }
 
