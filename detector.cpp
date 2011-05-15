@@ -14,7 +14,7 @@ Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	, block_size(_block_size)
 	, box(Point(pinf, pinf), Point(ninf, ninf))
 {
-	for (Path::const_iterator i = p.begin(), j = i+1; i != p.end(); ++i, ++j) {
+	for (Path::const_iterator i = p.begin(); i != p.end(); ++i) {
 		add_segment(i);
 		update_bounding_box(i);
 	}

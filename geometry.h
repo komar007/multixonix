@@ -6,6 +6,9 @@
 #include <limits>
 #include <cmath>
 #include <stdexcept>
+#ifdef DEBUG
+	#include <sstream>
+#endif
 
 //! @file
 //! \brief Plane geometry primitives support
@@ -177,19 +180,39 @@ public:
 			}
 			return *this;
 		}
+		cyclic_iterator next_cycle() const
+		{
+			return cyclic_iterator(p, i, cycles+1);
+		}
+		cyclic_iterator previous_cycle() const
+		{
+			return cyclic_iterator(p, i, cycles-1);
+		}
 		const Point& operator*() const
 		{
+#ifdef DEBUG
+			if (i >= (int)p.size() || i < 0) {
+				std::stringstream ss;
+				ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+				throw std::out_of_range(ss.str());
+			}
+#endif
 			return p[i];
 		}
 		const Point* operator->() const
 		{
+#ifdef DEBUG
+			if (i >= (int)p.size() || i < 0) {
+				std::stringstream ss;
+				ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+				throw std::out_of_range(ss.str());
+			}
+#endif
 			return &p[i];
 		}
 		bool operator==(const cyclic_iterator& o) const
 		{
-			return  i == o.i ||
-				(o.i == (int)p.size() && i == 0 && cycles > 0) ||   	// o is end
-				(i == (int)o.p.size() && o.i == 0 && o.cycles > 0);	// *this is end
+			return i == o.i && cycles == o.cycles;
 		}
 		bool operator!=(const cyclic_iterator& o) const
 		{
@@ -210,7 +233,7 @@ public:
 			else if (it < 0)
 				return cyclic_iterator(p, it + p.size(), cycles - 1);
 			else
-				return cyclic_iterator(p, it);
+				return cyclic_iterator(p, it, cycles);
 		}
 	};
 	typedef cyclic_iterator const_iterator;
@@ -226,7 +249,14 @@ public:
 	}
 	const_iterator end() const
 	{
-		return nth_point(closed ? size() : size() - 1);
+		if (closed) {
+			if (size() > 0)
+				return nth_point(0).next_cycle();
+			else
+				return nth_point(0);
+		} else {
+			return nth_point(size() - 1);
+		}
 	}
 	const_iterator begin() const
 	{
