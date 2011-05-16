@@ -46,6 +46,7 @@ ShapeCreationInfo::ShapeCreationInfo(const ShapeCreationInfo& o)
 	, shape_id(o.shape_id)
 	, shape_start(o.shape_start)
 	, shape_end(o.shape_end)
+	, shape_dir(o.shape_dir)
 	, path(NULL)
 {
 	if (o.path)
@@ -65,6 +66,7 @@ ShapeCreationInfo::ShapeCreationInfo(const Path& _path)
 	, shape_id(-1)
 	, shape_start(-1)
 	, shape_end(-1)
+	, shape_dir(FORWARD)
 	, path(NULL)
 {
 	path = new Path(_path);
@@ -74,15 +76,17 @@ ShapeCreationInfo::ShapeCreationInfo()
 	, shape_id(-1)
 	, shape_start(-1)
 	, shape_end(-1)
+	, shape_dir(FORWARD)
 	, path(NULL)
 {
 }
 const ShapeCreationInfo& ShapeCreationInfo::operator=(const ShapeCreationInfo& o)
 {
-	trace_id = o.trace_id;
-	shape_id = o.shape_id;
+	trace_id    = o.trace_id;
+	shape_id    = o.shape_id;
 	shape_start = o.shape_start;
-	shape_end = o.shape_end;
+	shape_end   = o.shape_end;
+	shape_dir   = o.shape_dir;
 	if (o.path) {
 		if (path)
 			*path = *o.path;
@@ -141,14 +145,14 @@ ShapeManager::ShapeManager(bool _with_detector)
 {
 }
 
-const Shape& ShapeManager::get_shape(int id) const throw (out_of_range)
+const Shape& ShapeManager::get_shape_const_ref(int id) const throw (out_of_range)
 {
 	auto trace_it = shapes.find(id);
 	if (trace_it == shapes.end())
 		throw out_of_range("no such trace in ShapeManager");
 	return *trace_it->second;
 }
-Shape& ShapeManager::get_shape(int id) throw (out_of_range)
+Shape& ShapeManager::get_shape_ref(int id) throw (out_of_range)
 {
 	auto trace_it = shapes.find(id);
 	if (trace_it == shapes.end())
@@ -172,7 +176,7 @@ int ShapeManager::start_trace(const Point& point)
 }
 void ShapeManager::extend_trace(int id, const Point& point)
 {
-	Shape& shape = get_shape(id);
+	Shape& shape = get_shape_ref(id);
 	try {
 		shape.extend(point);
 	} catch (domain_error) {
@@ -205,8 +209,8 @@ int ShapeManager::make_cut_shape_reverse(const Path& trace, const Path& shape, i
 }
 pair<int, int> ShapeManager::cut_shape(int trace_id, int id, int s1, int s2)
 {
-	const Path& trace = get_shape(trace_id).get_path();
-	const Path& shape = get_shape(id).get_path();
+	const Path& trace = get_shape_ref(trace_id).get_path();
+	const Path& shape = get_shape_ref(id).get_path();
 	pair<int, int> ids(-1, -1);
 	ids.first  = make_cut_shape_forward(trace, shape, s1, s2),
 	notify(ShapeMessage(CREATED, ids.first,

@@ -52,8 +52,8 @@ public:
 			m.extend_trace(tid, Point(5, 5));
 			m.extend_trace(tid, Point(5, 10));
 			pair<int, int> ids = m.cut_shape(tid, id, 0, 2);
-			const Path& one = m.get_shape(ids.first).get_path();
-			const Path& two = m.get_shape(ids.second).get_path();
+			const Path& one = m.get_shape_const_ref(ids.first).get_path();
+			const Path& two = m.get_shape_const_ref(ids.second).get_path();
 			assert_eq(one, fixture1);
 			assert_eq(two, fixture2);
 		}
@@ -64,11 +64,19 @@ public:
 			int tid = m.start_trace(Point(3, 0));
 			m.extend_trace(tid, Point(5, 5));
 			m.extend_trace(tid, Point(8, 0));
+			Obs w;
+			m.attach(w);
 			pair<int, int> ids = m.cut_shape(tid, id, 0, 0);
-			const Path& one = m.get_shape(ids.first).get_path();
-			const Path& two = m.get_shape(ids.second).get_path();
+			const Path& one = m.get_shape_const_ref(ids.first).get_path();
+			const Path& two = m.get_shape_const_ref(ids.second).get_path();
 			assert_eq(one, fixture1);
 			assert_eq(two, fixture2);
+			assert_eq(w.last_m.id, ids.second);
+			assert_eq(w.last_m.info->trace_id, tid);
+			assert_eq(w.last_m.info->shape_id, id);
+			assert_eq(w.last_m.info->shape_start, 0);
+			assert_eq(w.last_m.info->shape_end, 0);
+			assert_eq(w.last_m.info->shape_dir, REVERSE);
 		}
 	}
 

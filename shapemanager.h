@@ -63,9 +63,9 @@ private:
 
 	int make_cut_shape_forward(const Path& trace, const Path& shape, int s1, int s2);
 	int make_cut_shape_reverse(const Path& trace, const Path& shape, int s1, int s2);
+	Shape& get_shape_ref(int id) throw (std::out_of_range);
 public:
-	const Shape& get_shape(int id) const throw (std::out_of_range);
-	Shape& get_shape(int id) throw (std::out_of_range);
+	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	ShapeManager(bool _with_detector);
 	int add_shape(const Path& path);
 	int start_trace(const Point& point);
