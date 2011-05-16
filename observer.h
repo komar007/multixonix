@@ -4,6 +4,7 @@
 //! \brief Observer pattern implementation
 
 #include <vector>
+#include <algorithm>
 
 template <typename M>
 class Observer;
@@ -16,6 +17,7 @@ protected:
 	void notify(const M& msg);
 public:
 	void attach(Observer<M>& obs);
+	void detach(Observer<M>& obs);
 	virtual ~Observable()
 	{
 	}
@@ -33,6 +35,12 @@ template <typename M>
 void Observable<M>::attach(Observer<M>& obs)
 {
 	observers.push_back(&obs);
+}
+template <typename M>
+void Observable<M>::detach(Observer<M>& obs)
+{
+	auto obs_it = find(observers.begin(), observers.end(), &obs);
+	observers.erase(obs_it);
 }
 
 template <typename M>
