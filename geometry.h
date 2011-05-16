@@ -1,14 +1,12 @@
 #pragma once
 
 #include "utility.h"
+#include "iterators.h"
 #include <vector>
 #include <unordered_map>
 #include <limits>
 #include <cmath>
 #include <stdexcept>
-#ifdef DEBUG
-	#include <sstream>
-#endif
 
 //! @file
 //! \brief Plane geometry primitives support
@@ -141,102 +139,8 @@ public:
 	using std::vector<Point>::push_back;
 	using std::vector<Point>::reserve;
 
-	//! \brief Path iterator
-	//!
-	//! Iterator used to iterate over all points of a path, which comes
-	//! back to the beginning and never goes out of range. This allows
-	//! easy iteration over all edges using two iterators.
-	class cyclic_iterator {
-	private:
-		const std::vector<Point>& p;
-		int i;
-		short cycles;
-		cyclic_iterator(const std::vector<Point>& _p, int start, short _cycles)
-			: p(_p)
-			, i(start)
-			, cycles(_cycles)
-		{
-		}
-	public:
-		cyclic_iterator(const std::vector<Point>& _p, int start)
-			: p(_p)
-			, i(start)
-			, cycles(0)
-		{
-		}
-		cyclic_iterator& operator++()
-		{
-			if (++i == (int)p.size()) {
-				i = 0;
-				++cycles;
-			}
-			return *this;
-		}
-		cyclic_iterator& operator--()
-		{
-			if (--i == -1) {
-				i = p.size() - 1;
-				--cycles;
-			}
-			return *this;
-		}
-		cyclic_iterator next_cycle() const
-		{
-			return cyclic_iterator(p, i, cycles+1);
-		}
-		cyclic_iterator previous_cycle() const
-		{
-			return cyclic_iterator(p, i, cycles-1);
-		}
-		const Point& operator*() const
-		{
-#ifdef DEBUG
-			if (i >= (int)p.size() || i < 0) {
-				std::stringstream ss;
-				ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
-				throw std::out_of_range(ss.str());
-			}
-#endif
-			return p[i];
-		}
-		const Point* operator->() const
-		{
-#ifdef DEBUG
-			if (i >= (int)p.size() || i < 0) {
-				std::stringstream ss;
-				ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
-				throw std::out_of_range(ss.str());
-			}
-#endif
-			return &p[i];
-		}
-		bool operator==(const cyclic_iterator& o) const
-		{
-			return i == o.i && cycles == o.cycles;
-		}
-		bool operator!=(const cyclic_iterator& o) const
-		{
-			return !operator==(o);
-		}
-
-		int get_index() const
-		{
-			return i;
-		}
-
-		//! Iterator move.
-		cyclic_iterator operator+(size_t o) const
-		{
-			const int it = i + o;
-			if (it >= (int)p.size())
-				return cyclic_iterator(p, it - p.size(), cycles + 1);
-			else if (it < 0)
-				return cyclic_iterator(p, it + p.size(), cycles - 1);
-			else
-				return cyclic_iterator(p, it, cycles);
-		}
-	};
-	typedef cyclic_iterator const_iterator;
+	typedef forward_cyclic_iterator<Point> const_iterator;
+	typedef reverse_cyclic_iterator<Point> const_reverse_iterator;
 
 	Path(bool _closed = true)
 		: std::vector<Point>()

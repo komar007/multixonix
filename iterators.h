@@ -1,0 +1,165 @@
+#include <vector>
+#ifdef DEBUG
+	#include <sstream>
+#endif
+
+//! \brief vector cyclic iterator
+//!
+//! Iterator used to iterate over all points of a vector, which comes
+//! back to the beginning and never goes out of range. This allows
+//! easy iteration over all edges of a path using two iterators.
+template <typename T>
+class cyclic_iterator {
+protected:
+	const std::vector<T>& p;
+	int i;
+	short cycles;
+	cyclic_iterator(const std::vector<T>& _p, int start, short _cycles)
+		: p(_p)
+		, i(start)
+		, cycles(_cycles)
+	{
+	}
+public:
+	cyclic_iterator(const std::vector<T>& _p, int start)
+		: p(_p)
+		, i(start)
+		, cycles(0)
+	{
+	}
+	cyclic_iterator& operator++()
+	{
+		if (++i == (int)p.size()) {
+			i = 0;
+			++cycles;
+		}
+		return *this;
+	}
+	const T& operator*() const
+	{
+#ifdef DEBUG
+		if (i >= (int)p.size() || i < 0) {
+			std::stringstream ss;
+			ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+			throw std::out_of_range(ss.str());
+		}
+#endif
+		return p[i];
+	}
+	const T* operator->() const
+	{
+#ifdef DEBUG
+		if (i >= (int)p.size() || i < 0) {
+			std::stringstream ss;
+			ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+			throw std::out_of_range(ss.str());
+		}
+#endif
+		return &p[i];
+	}
+	int get_index() const
+	{
+		return i;
+	}
+};
+
+template <typename T>
+class reverse_cyclic_iterator;
+
+template <typename T>
+class forward_cyclic_iterator : public cyclic_iterator<T> {
+public:
+	typedef cyclic_iterator<T> base;
+private:
+	forward_cyclic_iterator(const std::vector<T>& _p, int start, short _cycles)
+		: cyclic_iterator<T>(_p, start, _cycles)
+	{
+	}
+public:
+	forward_cyclic_iterator(const reverse_cyclic_iterator<T>& f_it)
+		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
+	{
+	}
+	forward_cyclic_iterator& operator++()
+	{
+		base::operator++();
+		return *this;
+	}
+	forward_cyclic_iterator next_cycle() const
+	{
+		return forward_cyclic_iterator(base::p, base::i, base::cycles+1);
+	}
+	forward_cyclic_iterator(const std::vector<T>& _p, int start)
+		: cyclic_iterator<T>(_p, start)
+	{
+	}
+	bool operator==(const forward_cyclic_iterator<T>& o) const
+	{
+		return base::i == o.i && base::cycles >= o.cycles;
+	}
+	bool operator!=(const forward_cyclic_iterator<T>& o) const
+	{
+		return !operator==(o);
+	}
+	//! Iterator move.
+	forward_cyclic_iterator<T> operator+(size_t o) const
+	{
+		const int it = base::i + o;
+		if (it >= (int)base::p.size())
+			return forward_cyclic_iterator<T>(base::p, it - base::p.size(), base::cycles + 1);
+		else if (it < 0)
+			return forward_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles - 1);
+		else
+			return forward_cyclic_iterator<T>(base::p, it, base::cycles);
+	}
+	friend class reverse_cyclic_iterator<T>;
+};
+
+template <typename T>
+class reverse_cyclic_iterator : public cyclic_iterator<T> {
+public:
+	typedef cyclic_iterator<T> base;
+private:
+	reverse_cyclic_iterator(const std::vector<T>& _p, int start, short _cycles)
+		: cyclic_iterator<T>(_p, start, _cycles)
+	{
+	}
+public:
+	reverse_cyclic_iterator(const forward_cyclic_iterator<T>& f_it)
+		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
+	{
+	}
+	reverse_cyclic_iterator& operator++()
+	{
+		base::operator++();
+		return *this;
+	}
+	reverse_cyclic_iterator next_cycle() const
+	{
+		return reverse_cyclic_iterator(base::p, base::i, base::cycles-1);
+	}
+	reverse_cyclic_iterator(const std::vector<T>& _p, int start)
+		: cyclic_iterator<T>(_p, start)
+	{
+	}
+	bool operator==(const reverse_cyclic_iterator<T>& o) const
+	{
+		return base::i == o.i && base::cycles <= o.cycles;
+	}
+	bool operator!=(const reverse_cyclic_iterator<T>& o) const
+	{
+		return !operator==(o);
+	}
+	//! Iterator move.
+	reverse_cyclic_iterator<T> operator+(size_t o) const
+	{
+		const int it = base::i - o;
+		if (it >= (int)base::p.size())
+			return reverse_cyclic_iterator<T>(base::p, it - base::p.size(), base::cycles + 1);
+		else if (it < 0)
+			return reverse_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles - 1);
+		else
+			return reverse_cyclic_iterator<T>(base::p, it, base::cycles);
+	}
+	friend class forward_cyclic_iterator<T>;
+};
