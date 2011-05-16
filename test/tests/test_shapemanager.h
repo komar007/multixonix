@@ -51,7 +51,7 @@ public:
 			int tid = m.start_trace(Point(5, 0));
 			m.extend_trace(tid, Point(5, 5));
 			m.extend_trace(tid, Point(5, 10));
-			pair<int, int> ids = m.cut_shape(id, 0, 2, tid);
+			pair<int, int> ids = m.cut_shape(tid, id, 0, 2);
 			const Path& one = m.get_shape(ids.first).get_path();
 			const Path& two = m.get_shape(ids.second).get_path();
 			assert_eq(one, fixture1);
@@ -64,7 +64,7 @@ public:
 			int tid = m.start_trace(Point(3, 0));
 			m.extend_trace(tid, Point(5, 5));
 			m.extend_trace(tid, Point(8, 0));
-			pair<int, int> ids = m.cut_shape(id, 0, 0, tid);
+			pair<int, int> ids = m.cut_shape(tid, id, 0, 0);
 			const Path& one = m.get_shape(ids.first).get_path();
 			const Path& two = m.get_shape(ids.second).get_path();
 			assert_eq(one, fixture1);

@@ -51,11 +51,12 @@ ShapeCreationInfo::ShapeCreationInfo(const ShapeCreationInfo& o)
 	if (o.path)
 		path = new Path(*o.path);
 }
-ShapeCreationInfo::ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end)
+ShapeCreationInfo::ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end, enum ShapeDirection _shape_dir)
 	: trace_id(_trace_id)
 	, shape_id(_shape_id)
 	, shape_start(_shape_start)
 	, shape_end(_shape_end)
+	, shape_dir(_shape_dir)
 	, path(NULL)
 {
 }
@@ -178,27 +179,40 @@ void ShapeManager::extend_trace(int id, const Point& point)
 		throw domain_error("closed path as trace in ShapeManager::extend_trace");
 	}
 }
-pair<int, int> ShapeManager::cut_shape(int id, int s1, int s2, int trace_id)
+int ShapeManager::make_cut_shape_forward(const Path& trace, const Path& shape, int s1, int s2)
 {
-	const Path& trace = get_shape(trace_id).get_path();
-	const Path& shape = get_shape(id).get_path();
-	Path p1(trace);
-	p1.closed = true;
+	Path p(trace);
+	p.closed = true;
 	Path::const_iterator it_end1 = s1 != s2 ?
 		shape.nth_point(s1+1) :
 		shape.nth_point(s1+1).next_cycle();
 	for (Path::const_iterator it = shape.nth_point(s2+1); it != it_end1; ++it)
-		p1.push_back(*it);
-	Path p2(trace);
-	p2.closed = true;
-	Path:: const_reverse_iterator it_end2 = shape.nth_point(s1);
+		p.push_back(*it);
+	Shape *new_shape = new Shape(move(p), with_detector);
+	shapes.insert(make_pair(++last_id, new_shape));
+	return last_id;
+}
+int ShapeManager::make_cut_shape_reverse(const Path& trace, const Path& shape, int s1, int s2)
+{
+	Path p(trace);
+	p.closed = true;
+	Path::const_reverse_iterator it_end2 = shape.nth_point(s1);
 	for (Path::const_reverse_iterator it = shape.nth_point(s2); it != it_end2; ++it)
-		p2.push_back(*it);
-	Shape *shape1 = new Shape(move(p1), with_detector),
-	      *shape2 = new Shape(move(p2), with_detector);
-	pair<int, int> ids(last_id+1, last_id + 2);
-	last_id += 2;
-	shapes.insert(make_pair(ids.first,  shape1));
-	shapes.insert(make_pair(ids.second, shape2));
+		p.push_back(*it);
+	Shape *new_shape = new Shape(move(p), with_detector);
+	shapes.insert(make_pair(++last_id, new_shape));
+	return last_id;
+}
+pair<int, int> ShapeManager::cut_shape(int trace_id, int id, int s1, int s2)
+{
+	const Path& trace = get_shape(trace_id).get_path();
+	const Path& shape = get_shape(id).get_path();
+	pair<int, int> ids(-1, -1);
+	ids.first  = make_cut_shape_forward(trace, shape, s1, s2),
+	notify(ShapeMessage(CREATED, ids.first,
+				ShapeCreationInfo(trace_id, id, s2, s1, FORWARD)));
+	ids.second = make_cut_shape_reverse(trace, shape, s1, s2);
+	notify(ShapeMessage(CREATED, ids.second,
+				ShapeCreationInfo(trace_id, id, s2, s1, REVERSE)));
 	return ids;
 }

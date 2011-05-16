@@ -24,15 +24,20 @@ enum ShapeMessageType {
 	DESTROYED,
 	DUMMY
 };
+enum ShapeDirection {
+	FORWARD,
+	REVERSE
+};
 class ShapeCreationInfo {
 public:
 	int trace_id;
 	int shape_id;
 	int shape_start,
 	    shape_end;
+	ShapeDirection shape_dir;
 	Path *path;
 	ShapeCreationInfo(const ShapeCreationInfo& o);
-	ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end);
+	ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end, enum ShapeDirection shape_dir);
 	ShapeCreationInfo(const Path& _path);
 	ShapeCreationInfo();
 	const ShapeCreationInfo& operator=(const ShapeCreationInfo& o);
@@ -56,6 +61,8 @@ private:
 	std::unordered_map<int, Shape*> shapes;
 	int last_id;
 
+	int make_cut_shape_forward(const Path& trace, const Path& shape, int s1, int s2);
+	int make_cut_shape_reverse(const Path& trace, const Path& shape, int s1, int s2);
 public:
 	const Shape& get_shape(int id) const throw (std::out_of_range);
 	Shape& get_shape(int id) throw (std::out_of_range);
@@ -63,5 +70,5 @@ public:
 	int add_shape(const Path& path);
 	int start_trace(const Point& point);
 	void extend_trace(int, const Point& point);
-	std::pair<int, int> cut_shape(int id, int s1, int s2, int trace_id);
+	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
 };
