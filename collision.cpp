@@ -20,3 +20,11 @@ bool segment_path_segment_collision(const Point& s1, const Point& s2, const Poin
 	return (t1 * t2 < 0 || (t1 == 0 && t2 != 0)) &&
 	       (t3 * t4 < 0 || (t3 == 0 && t4 > 0) || (t4 == 0 && t3 > 0));
 }
+
+Point segment_segment_intersection(const Point& a1, const Point& a2, const Point& b1, const Point& b2)
+{
+	// from: http://paulbourke.net/geometry/lineline2d/
+	const double ua = ((b2.x - b1.x)*(a1.y - b1.y) - (b2.y - b1.y)*(a1.x - b1.x)) /
+		((b2.y - b1.y)*(a2.x - a1.x) - (b2.x - b1.x)*(a2.y - a1.y));
+	return Point(a1.x + ua*(a2.x - a1.x), a1.y + ua*(a2.y - a1.y));
+}

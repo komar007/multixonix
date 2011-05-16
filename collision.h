@@ -27,3 +27,6 @@ bool line_segment_collision(const Point &s1, const Point &s2, const Point &l1, c
 //! @param p2 path segment's end point
 //! @return true if there is exactly one point of intersection, false otherwise
 bool segment_path_segment_collision(const Point& s1, const Point& s2, const Point& p1, const Point& p2);
+
+//! Finds intersection point between two non-parallel segments a1a2 and b1b2
+Point segment_segment_intersection(const Point& a1, const Point& a2, const Point& b1, const Point& b2);

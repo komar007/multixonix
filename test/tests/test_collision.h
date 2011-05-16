@@ -23,6 +23,8 @@ public:
 				(test_fun)&CollisionTestSuite::test_line_segment_collision);
 		add_test("line_segment_collision_degenerated",
 				(test_fun)&CollisionTestSuite::test_line_segment_collision_degen);
+		add_test("segment_segment_intersection",
+				(test_fun)&CollisionTestSuite::test_segment_segment_intersection);
 	}
 
 	void test_line_segment_collision()
@@ -40,5 +42,13 @@ public:
 		assert_eq(line_segment_collision(la, lb, la, lb), true);
 		assert_eq(line_segment_collision(la, lb, la, Point(2, 4)), true);
 		assert_eq(line_segment_collision(la, lb, Point(2, 4), la), false);
+	}
+	void test_segment_segment_intersection()
+	{
+		assert_eq(segment_segment_intersection({1,2}, {7,4}, {6,1}, {3,4}), Point(4,3));
+		assert_eq(segment_segment_intersection({6,1}, {3,4}, {1,2}, {7,4}), Point(4,3));
+		assert_eq(segment_segment_intersection({3,4}, {6,1}, {1,2}, {7,4}), Point(4,3));
+		assert_eq(segment_segment_intersection({6,1}, {3,4}, {7,4}, {1,2}), Point(4,3));
+		assert_eq(segment_segment_intersection({3,4}, {6,1}, {7,4}, {1,2}), Point(4,3));
 	}
 };
