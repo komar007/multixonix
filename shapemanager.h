@@ -14,6 +14,7 @@ private:
 public:
 	Shape(const Path& _path, bool with_detector);
 	Shape(Path&& _path, bool with_detector);
+	const Path& get_path() const;
 	void extend(const Point& point) throw (std::domain_error);
 	~Shape();
 };
@@ -54,10 +55,13 @@ private:
 	bool with_detector;
 	std::unordered_map<int, Shape*> shapes;
 	int last_id;
+
 public:
+	const Shape& get_shape(int id) const throw (std::out_of_range);
+	Shape& get_shape(int id) throw (std::out_of_range);
 	ShapeManager(bool _with_detector);
 	int add_shape(const Path& path);
 	int start_trace(const Point& point);
 	void extend_trace(int, const Point& point);
-	std::pair<int, int> cut_shape(int id, int trace_id);
+	std::pair<int, int> cut_shape(int id, int s1, int s2, int trace_id);
 };
