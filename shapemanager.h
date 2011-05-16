@@ -22,6 +22,7 @@ public:
 enum ShapeMessageType {
 	CREATED,
 	DESTROYED,
+	EXTENDED,
 	DUMMY
 };
 enum ShapeDirection {
@@ -48,7 +49,9 @@ public:
 	ShapeMessageType type;
 	int id;
 	ShapeCreationInfo* info;
+	Point *point;
 	ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info = ShapeCreationInfo());
+	ShapeMessage(ShapeMessageType _type, int _id, const Point& _point);
 	ShapeMessage();
 	ShapeMessage(const ShapeMessage& o);
 	const ShapeMessage& operator=(const ShapeMessage& o);

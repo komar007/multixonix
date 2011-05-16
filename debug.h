@@ -31,6 +31,8 @@ inline std::ostream& operator<<(std::ostream& o, const ShapeMessageType& m)
 		o << "CREATED"; break;
 	case DESTROYED:
 		o << "DESTROYED"; break;
+	case EXTENDED:
+		o << "EXTENDED"; break;
 	case DUMMY:
 		o << "DUMMY"; break;
 	}

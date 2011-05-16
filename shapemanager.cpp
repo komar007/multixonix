@@ -104,9 +104,12 @@ ShapeMessage::ShapeMessage(const ShapeMessage& o)
 	: type(o.type)
 	, id(o.id)
 	, info(NULL)
+	, point(NULL)
 {
 	if (o.info)
 		info = new ShapeCreationInfo(*o.info);
+	if (o.point)
+		point = new Point(*o.point);
 }
 const ShapeMessage& ShapeMessage::operator=(const ShapeMessage& o)
 {
@@ -118,25 +121,45 @@ const ShapeMessage& ShapeMessage::operator=(const ShapeMessage& o)
 		else
 			info = new ShapeCreationInfo(*o.info);
 	}
+	if (o.point) {
+		if (point)
+			*point = *o.point;
+		else
+			point = new Point(*o.point);
+	}
 	return *this;
 }
 ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info)
 	: type(_type)
 	, id(_id)
 	, info(NULL)
+	, point(NULL)
 {
-	if (type == CREATED)
-		info = new ShapeCreationInfo(_info);
+	if (type != CREATED)
+		throw domain_error("type != CREATED in creation message");
+	info = new ShapeCreationInfo(_info);
+}
+ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const Point& _point)
+	: type(_type)
+	, id(_id)
+	, info(NULL)
+	, point(NULL)
+{
+	if (type != EXTENDED)
+		throw domain_error("type != EXTENDED in extension message");
+	point = new Point(_point);
 }
 ShapeMessage::ShapeMessage()
 	: type(DUMMY)
 	, id(-1)
 	, info(NULL)
+	, point(NULL)
 {
 }
 ShapeMessage::~ShapeMessage()
 {
 	delete info;
+	delete point;
 }
 
 ShapeManager::ShapeManager(bool _with_detector)
@@ -182,6 +205,7 @@ void ShapeManager::extend_trace(int id, const Point& point)
 	} catch (domain_error) {
 		throw domain_error("closed path as trace in ShapeManager::extend_trace");
 	}
+	notify(ShapeMessage(EXTENDED, id, point));
 }
 int ShapeManager::make_cut_shape_forward(const Path& trace, const Path& shape, int s1, int s2)
 {
