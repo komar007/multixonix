@@ -27,13 +27,13 @@ public:
 		, cycles(0)
 	{
 	}
-	cyclic_iterator& operator++()
+	bool operator==(const cyclic_iterator& o) const
 	{
-		if (++i == (int)p.size()) {
-			i = 0;
-			++cycles;
-		}
-		return *this;
+		return i == o.i && cycles >= o.cycles;
+	}
+	bool operator!=(const cyclic_iterator& o) const
+	{
+		return !operator==(o);
 	}
 	const T& operator*() const
 	{
@@ -80,26 +80,21 @@ public:
 		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
 	{
 	}
-	forward_cyclic_iterator& operator++()
-	{
-		base::operator++();
-		return *this;
-	}
 	forward_cyclic_iterator next_cycle() const
 	{
 		return forward_cyclic_iterator(base::p, base::i, base::cycles+1);
 	}
+	forward_cyclic_iterator& operator++()
+	{
+		if (++base::i == (int)base::p.size()) {
+			base::i = 0;
+			++base::cycles;
+		}
+		return *this;
+	}
 	forward_cyclic_iterator(const std::vector<T>& _p, int start)
 		: cyclic_iterator<T>(_p, start)
 	{
-	}
-	bool operator==(const forward_cyclic_iterator<T>& o) const
-	{
-		return base::i == o.i && base::cycles >= o.cycles;
-	}
-	bool operator!=(const forward_cyclic_iterator<T>& o) const
-	{
-		return !operator==(o);
 	}
 	//! Iterator move.
 	forward_cyclic_iterator<T> operator+(size_t o) const
@@ -129,26 +124,21 @@ public:
 		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
 	{
 	}
-	reverse_cyclic_iterator& operator++()
-	{
-		base::operator++();
-		return *this;
-	}
 	reverse_cyclic_iterator next_cycle() const
 	{
-		return reverse_cyclic_iterator(base::p, base::i, base::cycles-1);
+		return reverse_cyclic_iterator(base::p, base::i, base::cycles+1);
+	}
+	reverse_cyclic_iterator& operator++()
+	{
+		if (--base::i == -1) {
+			base::i = base::p.size() - 1;
+			++base::cycles;
+		}
+		return *this;
 	}
 	reverse_cyclic_iterator(const std::vector<T>& _p, int start)
 		: cyclic_iterator<T>(_p, start)
 	{
-	}
-	bool operator==(const reverse_cyclic_iterator<T>& o) const
-	{
-		return base::i == o.i && base::cycles <= o.cycles;
-	}
-	bool operator!=(const reverse_cyclic_iterator<T>& o) const
-	{
-		return !operator==(o);
 	}
 	//! Iterator move.
 	reverse_cyclic_iterator<T> operator+(size_t o) const
