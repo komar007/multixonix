@@ -72,6 +72,7 @@ private:
 	Shape& get_shape_ref(int id) throw (std::out_of_range);
 public:
 	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
+	int num_shapes() const { return shapes.size(); }
 	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	ShapeManager(bool _with_detector);
 	int add_shape(const Path& path);

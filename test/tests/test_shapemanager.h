@@ -41,6 +41,8 @@ public:
 				(test_fun)&ShapeManagerTestSuite::cut_path);
 		add_test("traces",
 				(test_fun)&ShapeManagerTestSuite::traces);
+		add_test("synchronization",
+				(test_fun)&ShapeManagerTestSuite::synchronization);
 	}
 
 	void cut_path()
@@ -92,9 +94,9 @@ public:
 		m.extend_trace(id, Point(2, 2));
 		assert_eq(w.last_m.id, id);
 		assert_eq(w.last_m.type, EXTENDED);
-		assert_eq(*w.last_m.point, Point(2, 2));
+		assert_eq(*w.last_m.extension_point, Point(2, 2));
 		m.extend_trace(id, Point(3, 3));
-		assert_eq(*w.last_m.point, Point(3, 3));
+		assert_eq(*w.last_m.extension_point, Point(3, 3));
 	}
 
 	void notifications_create_new()
@@ -111,5 +113,47 @@ public:
 		assert_eq(w.last_m.info->trace_id, -1);
 		assert_eq(w.last_m.info->shape_id, -1);
 		assert_eq(w.last_m.info->path->size(), 3u);
+	}
+
+	void synchronization()
+	{
+		ShapeManager master_m(false);
+		ShapeManager replica_m(false);
+		master_m.attach(replica_m);
+		int id = master_m.add_shape(p2);
+		int pid = id;
+		assert_eq(
+			replica_m.get_shape_const_ref(id).get_path(),
+			master_m.get_shape_const_ref(id).get_path()
+		);
+		id = master_m.start_trace(Point(5,0));
+		assert_eq(
+			replica_m.get_shape_const_ref(id).get_path(),
+			master_m.get_shape_const_ref(id).get_path()
+		);
+		master_m.extend_trace(id, Point(5, 5));
+		assert_eq(master_m.num_shapes(), replica_m.num_shapes());
+		master_m.extend_trace(id, Point(5, 10));
+		assert_eq(
+			replica_m.get_shape_const_ref(id).get_path(),
+			master_m.get_shape_const_ref(id).get_path()
+		);
+		pair<int, int> ids = master_m.cut_shape(id, pid, 0, 2);
+		assert_eq(
+			replica_m.get_shape_const_ref(ids.first).get_path(),
+			master_m.get_shape_const_ref(ids.first).get_path()
+		);
+		assert_eq(
+			replica_m.get_shape_const_ref(ids.second).get_path(),
+			master_m.get_shape_const_ref(ids.second).get_path()
+		);
+		master_m.destroy_shape(pid);
+		bool found_master = false;
+		try { auto t = master_m.get_shape_const_ref(pid); found_master = true; } catch (...) {}
+		assert_eq(found_master, false);
+		bool found_replica = false;
+		try {auto t = replica_m.get_shape_const_ref(pid); found_replica = true; } catch (...) {}
+		assert_eq(found_replica, false);
+		assert_eq(master_m.num_shapes(), replica_m.num_shapes());
 	}
 };
