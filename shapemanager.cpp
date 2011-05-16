@@ -291,7 +291,7 @@ void ShapeManager::update(const Observable<ShapeMessage>& obj, const ShapeMessag
 			const Path& shape = get_shape_const_ref(msg.info->shape_id).get_path();
 			cut_shape_impl(
 				trace, shape,
-				msg.info->shape_start, msg.info->shape_end,
+				msg.info->shape_end, msg.info->shape_start,
 				msg.info->shape_dir,
 				msg.id
 			);
