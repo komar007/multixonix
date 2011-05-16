@@ -31,9 +31,13 @@ public:
 		, y(_y)
 	{
 	}
-	bool operator==(const Point& o)
+	bool operator==(const Point& o) const
 	{
 		return x == o.x && y == o.y;
+	}
+	bool operator!=(const Point& o) const
+	{
+		return !operator==(o);
 	}
 };
 
@@ -58,6 +62,10 @@ public:
 	bool operator==(const Location& o) const
 	{
 		return x == o.x && y == o.y;
+	}
+	bool operator!=(const Location& o) const
+	{
+		return !operator==(o);
 	}
 };
 
@@ -142,9 +150,19 @@ public:
 	typedef forward_cyclic_iterator<Point> const_iterator;
 	typedef reverse_cyclic_iterator<Point> const_reverse_iterator;
 
-	Path(bool _closed = true)
-		: std::vector<Point>()
+	Path(bool _closed = true, const std::vector<Point>& v = std::vector<Point>())
+		: std::vector<Point>(v)
 		, closed(_closed)
+	{
+	}
+	Path(const Path& o)
+		: std::vector<Point>(o)
+		, closed(o.closed)
+	{
+	}
+	Path(Path&& o)
+		: std::vector<Point>(move(o))
+		, closed(o.closed)
 	{
 	}
 	const_iterator nth_point(size_t n) const
@@ -167,6 +185,17 @@ public:
 		return nth_point(0);
 	}
 };
+
+inline bool operator==(const Path& p1, const Path& p2)
+{
+	if (p1.size() != p2.size())
+		return false;
+	for (auto i = p1.begin(), j = p2.begin(); i != p1.end() && j != p2.end(); ++i, ++j)
+		if (*i != *j)
+			return false;
+
+	return true;
+}
 
 //! \brief Counts double signed area of a triangle described by three points
 //!

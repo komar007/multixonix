@@ -37,6 +37,14 @@ inline std::ostream& operator<<(std::ostream& o, const ShapeMessageType& m)
 	return o;
 }
 
+inline std::ostream& operator<<(std::ostream& o, const Path& p)
+{
+	o << (p.closed ? "closed" : "open");
+	for (auto i = p.begin(); i != p.end(); ++i)
+		o << " " << *i;
+	return o;
+}
+
 template <typename T, typename H>
 inline bool operator==(const std::unordered_set<T, H>& s1, const std::unordered_set<T, H>& s2)
 {
