@@ -6,7 +6,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "actor.h"
 
 using namespace std;
 
@@ -24,6 +23,8 @@ int main()
 {
 	sf::RenderWindow app(sf::VideoMode(800, 600), "Xonix", sf::Style::Close);
 	ShapeManager m(true);
+	ShapeManager q(false);
+	m.attach(q);
 	m.add_shape(Path(true, vector<Point>{{1,1}, {9,1}, {9,9}, {1,9}}));
 	bool running = true;
 	Point pos(5, 0.5);
@@ -76,7 +77,7 @@ int main()
 		cerr << "\r";
 		if (trace != -1)
 			m.extend_trace(trace, pos);
-		for (auto it = m.begin(); it != m.end(); ++it) {
+		for (auto it = q.begin(); it != q.end(); ++it) {
 			const Shape& shape = *it;
 			if (!shape.get_path().closed) {
 				int num = 0;

@@ -7,10 +7,11 @@ SOURCES=geometry.cpp\
 	main.cpp\
 	detector.cpp\
 	shapemanager.cpp\
+	actormanager.cpp\
 	xonix.cpp\
 	test/run_tests.cpp
 
-OBJS=geometry.o collision.o detector.o shapemanager.o xonix.o
+OBJS=geometry.o collision.o detector.o shapemanager.o actormanager.o xonix.o
 
 all: dep
 	make main
