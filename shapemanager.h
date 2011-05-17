@@ -101,6 +101,37 @@ public:
 	int start_trace(const Point& point);
 	void extend_trace(int id, const Point& point);
 	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
-	std::unordered_map<int, Shape*>::const_iterator begin() const { return shapes.begin(); }
-	std::unordered_map<int, Shape*>::const_iterator end() const { return shapes.end(); }
+
+	class iterator {
+	private:
+		std::unordered_map<int, Shape*>::const_iterator i;
+	public:
+		iterator(const std::unordered_map<int, Shape*>::const_iterator& _i)
+			: i(_i)
+		{
+		}
+		iterator& operator++()
+		{
+			++i;
+			return *this;
+		}
+		const Shape& operator*()
+		{
+			return *i->second;
+		}
+		const Shape* operator->()
+		{
+			return i->second;
+		}
+		bool operator==(const iterator& o)
+		{
+			return i == o.i;
+		}
+		bool operator!=(const iterator& o)
+		{
+			return i != o.i;
+		}
+	};
+	iterator begin() const { return iterator(shapes.begin()); }
+	iterator end() const { return iterator(shapes.end()); }
 };

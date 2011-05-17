@@ -37,11 +37,11 @@ int main()
 		app.Clear();
 		bool check_trace = false;
 		for (auto it = m.begin(); it != m.end(); ++it) {
-			if (trace == it->first) {
+			const Shape& shape = *it;
+			if (trace == shape.get_id()) {
 				check_trace = true;
 				continue;
 			}
-			const Shape& shape = *it->second;
 			int where;
 			if (shape.get_detector().segment_intersections(old_pos, pos, where) > 0) {
 				Point inter = segment_segment_intersection(old_pos, pos, *shape.get_path().nth_point(where), *shape.get_path().nth_point(where+1));
@@ -50,8 +50,8 @@ int main()
 					beg = where;
 				} else {
 					m.extend_trace(trace, inter);
-					pair<int, int> ids = m.cut_shape(trace, it->first, beg, where);
-					m.destroy_shape(it->first);
+					pair<int, int> ids = m.cut_shape(trace, shape.get_id(), beg, where);
+					m.destroy_shape(shape.get_id());
 					m.destroy_shape(trace);
 					check_trace = false;
 					trace = -1;
@@ -77,7 +77,7 @@ int main()
 		if (trace != -1)
 			m.extend_trace(trace, pos);
 		for (auto it = m.begin(); it != m.end(); ++it) {
-			const Shape& shape = *it->second;
+			const Shape& shape = *it;
 			if (!shape.get_path().closed) {
 				int num = 0;
 				for (auto i = shape.get_path().begin(), j = i+1; i != shape.get_path().end(); ++i, ++j) {
@@ -112,9 +112,9 @@ int main()
 				}
 			}
 			for (auto it = m.begin(); it != m.end(); ++it) {
-				if (trace == it->first)
+				const Shape& sh = *it;
+				if (trace == sh.get_id())
 					continue;
-				const Shape& sh = *it->second;
 				int where;
 				if (sh.get_detector().segment_intersections(old, balls[i], where) > 0) {
 					Point p1 = *sh.get_path().nth_point(where);

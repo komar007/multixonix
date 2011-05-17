@@ -184,10 +184,10 @@ int ShapeManager::add_shape_impl(const Path& path, int id)
 	Shape *sh = new Shape(path, with_detector);
 	if (id == -1) {
 		shapes.insert(make_pair(++last_id, sh));
-		return last_id;
+		return sh->id = last_id;
 	} else {
 		shapes.insert(make_pair(id, sh));
-		return id;
+		return sh->id = id;
 	}
 }
 int ShapeManager::add_shape(const Path& path)
@@ -244,10 +244,10 @@ int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, i
 	Shape *new_shape = new Shape(move(p), with_detector);
 	if (id == -1) {
 		shapes.insert(make_pair(++last_id, new_shape));
-		return last_id;
+		return new_shape->id = last_id;
 	} else {
 		shapes.insert(make_pair(id, new_shape));
-		return id;
+		return new_shape->id = id;
 	}
 }
 pair<int, int> ShapeManager::cut_shape(int trace_id, int id, int s1, int s2)
