@@ -1,5 +1,8 @@
 #pragma once
 
+//! @file
+//! \brief overloaded operators for debugging purposes
+
 #include "shapemanager.h"
 #include <unordered_set>
 #include <iterator>

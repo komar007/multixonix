@@ -5,14 +5,14 @@
 
 #include "geometry.h"
 
-//! Checks if point p is inside a rectangle, whose upper-left corner is r1 and
-//! lower-right corner is r2
+//! Checks if point p is inside a rectangle, whose upper-left corner is r1 and lower-right corner is \param r2
 bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
 
 //! \brief Tests intersection between line and segment
 //!
 //! @return true if there is exactly one point of intersection, false otherwise
 bool line_segment_collision(const Point &s1, const Point &s2, const Point &l1, const Point &l2);
+
 //! \brief Tests intersection between a free segment and a segment belonging
 //! to a path
 //!
@@ -28,5 +28,11 @@ bool line_segment_collision(const Point &s1, const Point &s2, const Point &l1, c
 //! @return true if there is exactly one point of intersection, false otherwise
 bool segment_path_segment_collision(const Point& s1, const Point& s2, const Point& p1, const Point& p2);
 
-//! Finds intersection point between two non-parallel segments a1a2 and b1b2
+//! \brief Finds intersection point between two non-parallel segments a1a2 and b1b2
+//!
+//! @param a1 first segment's start point
+//! @param a2 first segment's end point
+//! @param b1 second segment's start point
+//! @param b2 second segment's end point
+//! @return Point of intersection
 Point segment_segment_intersection(const Point& a1, const Point& a2, const Point& b1, const Point& b2);

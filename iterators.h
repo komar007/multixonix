@@ -1,3 +1,8 @@
+#pragma once
+
+//! @file
+//! \brief Special cyclic operator for vector used throughout the project
+
 #include <vector>
 #ifdef DEBUG
 	#include <sstream>

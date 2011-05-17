@@ -1,11 +1,16 @@
 #pragma once
 
+//! @file
+//! \brief Implementation of a shape manager which can notify about changes in
+//! its shape repository using the observer pattern
+
 #include "geometry.h"
 #include "detector.h"
 #include "observer.h"
 #include <unordered_map>
 #include <stdexcept>
 
+//! A path with an optional detector
 class Shape {
 private:
 	Path path;

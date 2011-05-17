@@ -165,10 +165,18 @@ public:
 		, closed(o.closed)
 	{
 	}
+	//! \brief iterator to point number n
+	//!
+	//! @param n point's index
+	//! @return iterator to the nth point
 	const_iterator nth_point(size_t n) const
 	{
 		return const_iterator(*this, n);
 	}
+	//! \brief end of the path
+	//!
+	//! @return if the path is closed, const_iterator to element one behind the end
+	//! @return if the path is open, const_iterator to the last element
 	const_iterator end() const
 	{
 		if (closed) {
@@ -180,15 +188,22 @@ public:
 			return nth_point(size() - 1);
 		}
 	}
+	//! \brief beginning of the path
+	//!
+	//! @return const_iterator to the first point
 	const_iterator begin() const
 	{
 		return nth_point(0);
 	}
 };
 
+//! Path comparison
+//! \relates Path
 inline bool operator==(const Path& p1, const Path& p2)
 {
 	if (p1.size() != p2.size())
+		return false;
+	if (p1.closed != p2.closed)
 		return false;
 	for (auto i = p1.begin(), j = p2.begin(); i != p1.end() && j != p2.end(); ++i, ++j)
 		if (*i != *j)
@@ -203,5 +218,15 @@ inline bool operator==(const Path& p1, const Path& p2)
 //! they turn counter-clockwise, and 0 if points are colinear
 double turning_determinant(const Point &p1, const Point &p2, const Point &p3);
 
-//! Distance between line and point;
+//! \brief Distance between line and point;
+//!
+//! @param l1, l2 two distinct points on line
+//! @param p point
+//! @return distance between line l1l2 and point p
 double line_point_distance(const Point& l1, const Point& l2, const Point& p);
+
+//! \brief couns the area of a path
+//!
+//! @param path input path
+//! @return path's nonnegative area
+double path_area(const Path& path);
