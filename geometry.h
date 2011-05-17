@@ -171,7 +171,7 @@ public:
 	//! @return iterator to the nth point
 	const_iterator nth_point(size_t n) const
 	{
-		return const_iterator(*this, n);
+		return const_iterator(*this, 0) + n;
 	}
 	//! \brief end of the path
 	//!

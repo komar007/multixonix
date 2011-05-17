@@ -53,6 +53,7 @@ int main()
 					pair<int, int> ids = m.cut_shape(trace, it->first, beg, where);
 					m.destroy_shape(it->first);
 					m.destroy_shape(trace);
+					check_trace = false;
 					trace = -1;
 					const Shape& s1 = m.get_shape_const_ref(ids.first);
 					const Shape& s2 = m.get_shape_const_ref(ids.second);
@@ -143,8 +144,8 @@ int main()
 		const sf::Input& input = app.GetInput();
 		if (input.IsKeyDown(sf::Key::Up)) {
 			old_pos = pos;
-			pos.x = pos.x + 0.04*cos(angle);
-			pos.y = pos.y + 0.04*sin(angle);
+			pos.x = pos.x + 0.04*cos(angle) + rand()%100 * 0.01 * 0.0001;
+			pos.y = pos.y + 0.04*sin(angle) + rand()%100 * 0.01 * 0.0001;
 		}
 		if (input.IsKeyDown(sf::Key::Left)) {
 			angle -= 0.05;

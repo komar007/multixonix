@@ -107,8 +107,6 @@ public:
 		const int it = base::i + o;
 		if (it >= (int)base::p.size())
 			return forward_cyclic_iterator<T>(base::p, it - base::p.size(), base::cycles + 1);
-		else if (it < 0)
-			return forward_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles - 1);
 		else
 			return forward_cyclic_iterator<T>(base::p, it, base::cycles);
 	}
@@ -149,10 +147,8 @@ public:
 	reverse_cyclic_iterator<T> operator+(size_t o) const
 	{
 		const int it = base::i - o;
-		if (it >= (int)base::p.size())
-			return reverse_cyclic_iterator<T>(base::p, it - base::p.size(), base::cycles + 1);
-		else if (it < 0)
-			return reverse_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles - 1);
+		if (it < 0)
+			return reverse_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles + 1);
 		else
 			return reverse_cyclic_iterator<T>(base::p, it, base::cycles);
 	}

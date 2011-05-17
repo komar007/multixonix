@@ -232,19 +232,29 @@ int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, i
 {
 	Path p(trace);
 	p.closed = true;
-	switch (dir) {
-	case FORWARD: {
+	bool only_forward = false,
+	     only_reverse = false;
+	if (s1 == s2) {
+		// distances between endpoints (beginning, end) of the trace and s1=s2
+		double beg_dist = (*shape.nth_point(s1) - *trace.begin()).length(),
+		       end_dist = (*shape.nth_point(s1) - *trace.nth_point(trace.size()-1)).length();
+		if (beg_dist < end_dist)
+			only_forward = true;
+		else
+			only_reverse = true;
+	}
+	if (dir == FORWARD && !only_reverse) {
 		Path::const_iterator it_end = s1 != s2 ?
-			(shape.nth_point(s1) + 1) :
-			(shape.nth_point(s1) + 1).next_cycle();
-		for (Path::const_iterator it = shape.nth_point(s2)+1; it != it_end; ++it)
+			shape.nth_point(s1+1) :
+			shape.nth_point(s1+1).next_cycle();
+		for (Path::const_iterator it = shape.nth_point(s2+1); it != it_end; ++it)
 			p.push_back(*it);
-		break; }
-	case REVERSE: {
-		Path::const_reverse_iterator it_end = shape.nth_point(s1);
+	} else if (dir == REVERSE && !only_forward) {
+		Path::const_reverse_iterator it_end = s1 != s2 ?
+			shape.nth_point(s1) :
+			shape.nth_point(s1).next_cycle();
 		for (Path::const_reverse_iterator it = shape.nth_point(s2); it != it_end; ++it)
 			p.push_back(*it);
-		break; }
 	}
 	Shape *new_shape = new Shape(move(p), with_detector);
 	if (id == -1) {
@@ -273,6 +283,7 @@ void ShapeManager::destroy_shape_impl(int id)
 	auto shape_it = shapes.find(id);
 	if (shape_it == shapes.end())
 		throw out_of_range("No such shape in destroy_shape");
+	delete shape_it->second;
 	shapes.erase(shape_it);
 }
 void ShapeManager:: destroy_shape(int id)
