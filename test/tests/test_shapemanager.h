@@ -62,6 +62,19 @@ public:
 			assert_eq(two, fixture2);
 		}
 		{
+			Path fixture1(true, vector<Point>{{5,0}, {5,5}, {5,10}, {0,10}, {0,0}});
+			Path fixture2(true, vector<Point>{{5,0}, {5,5}, {5,10}, {10,10}, {10,0}});
+			int id = m.add_shape(p2);
+			int tid = m.start_trace(Point(5, 0));
+			m.extend_trace(tid, Point(5, 5));
+			m.extend_trace(tid, Point(0, 5));
+			pair<int, int> ids = m.cut_shape(tid, id, 0, 3);
+			const Path& one = m.get_shape_const_ref(ids.first).get_path();
+			const Path& two = m.get_shape_const_ref(ids.second).get_path();
+			assert_eq(one, fixture1);
+			assert_eq(two, fixture2);
+		}
+		{
 			Path fixture1(true, vector<Point>{{3,0}, {5,5}, {8,0}, {10,0}, {10,10}, {0,10}, {0,0}});
 			Path fixture2(true, vector<Point>{{3,0}, {5,5}, {8,0}});
 			int id = m.add_shape(p2);

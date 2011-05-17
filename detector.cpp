@@ -54,7 +54,7 @@ namespace std {
 
 typedef take_second<Location, Path::const_iterator> take_iter;
 
-int Detector::segment_intersections(const Point& s1, const Point& s2)
+int Detector::segment_intersections(const Point& s1, const Point& s2, int& out_where) const
 {
 	BfsPainter pt(s1, s2, *this);
 	unordered_set<Path::const_iterator> p_iterators;
@@ -67,8 +67,10 @@ int Detector::segment_intersections(const Point& s1, const Point& s2)
 	for (auto i = p_iterators.begin(); i != p_iterators.end(); ++i) {
 		const Path::const_iterator& p1 = *i;
 		const Path::const_iterator& p2 = *i + 1;
-		if (segment_path_segment_collision(s1, s2, *p1, *p2))
+		if (segment_path_segment_collision(s1, s2, *p1, *p2)) {
 			++nintersections;
+			out_where = p1.get_index();
+		}
 	}
 	return nintersections;
 }

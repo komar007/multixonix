@@ -19,7 +19,8 @@ private:
 public:
 	Shape(const Path& _path, bool with_detector);
 	Shape(Path&& _path, bool with_detector);
-	const Path& get_path() const;
+	const Path& get_path() const { return path; }
+	const Detector& get_detector() const { return *detector; }
 	void extend(const Point& point) throw (std::domain_error);
 	~Shape();
 };
@@ -80,9 +81,12 @@ public:
 	int num_shapes() const { return shapes.size(); }
 	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	ShapeManager(bool _with_detector);
+	~ShapeManager();
 	int add_shape(const Path& path);
 	int start_trace(const Point& point);
 	void extend_trace(int id, const Point& point);
 	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
 	void destroy_shape(int id);
+	std::unordered_map<int, Shape*>::const_iterator begin() const { return shapes.begin(); }
+	std::unordered_map<int, Shape*>::const_iterator end() const { return shapes.end(); }
 };

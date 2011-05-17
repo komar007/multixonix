@@ -19,12 +19,7 @@ Shape::Shape(Path&& _path, bool with_detector)
 void Shape::initialize(bool with_detector)
 {
 	if (with_detector)
-		detector = new Detector(path, Vector(0, 0), 1); //FIXME: choose sensible values
-}
-
-const Path& Shape::get_path() const
-{
-	return path;
+		detector = new Detector(path, Vector(0, 0), 0.05); //FIXME: choose sensible values
 }
 
 void Shape::extend(const Point& point) throw (domain_error)
@@ -177,6 +172,12 @@ ShapeManager::ShapeManager(bool _with_detector)
 {
 }
 
+ShapeManager::~ShapeManager()
+{
+	for (auto it = shapes.begin(); it != shapes.end(); ++it)
+		delete it->second;
+}
+
 const Shape& ShapeManager::get_shape_const_ref(int id) const throw (out_of_range)
 {
 	auto trace_it = shapes.find(id);
@@ -234,9 +235,9 @@ int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, i
 	switch (dir) {
 	case FORWARD: {
 		Path::const_iterator it_end = s1 != s2 ?
-			shape.nth_point(s1+1) :
-			shape.nth_point(s1+1).next_cycle();
-		for (Path::const_iterator it = shape.nth_point(s2+1); it != it_end; ++it)
+			(shape.nth_point(s1) + 1) :
+			(shape.nth_point(s1) + 1).next_cycle();
+		for (Path::const_iterator it = shape.nth_point(s2)+1; it != it_end; ++it)
 			p.push_back(*it);
 		break; }
 	case REVERSE: {

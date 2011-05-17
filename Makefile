@@ -1,5 +1,6 @@
 INCLUDE=-I.
-CC=g++ -std=c++0x -O2 -lm $(INCLUDE)
+CC=g++ -g -ggdb -pg -std=c++0x -O2 -lm $(INCLUDE)
+LIBS=-lsfml-system -lsfml-graphics -lsfml-window
 WARN=-Wall -Wextra
 SOURCES=geometry.cpp\
 	collision.cpp\
@@ -31,7 +32,7 @@ dep: test/run_tests.cpp
 
 main: $(OBJS) main.o
 	@echo LINK $@
-	@$(CC) -o $@ $^
+	@$(CC) $(LIBS) -o $@ $^
 
 test/run_tests.cpp test/gen_run_tests.sh:
 	(cd test && ./gen_run_tests.sh > run_tests.cpp)

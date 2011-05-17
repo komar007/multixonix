@@ -64,18 +64,20 @@ public:
 		Point p25(5, 3);
 		Point p26(4, 1);
  		p.push_back(p1); p.push_back(p2); p.push_back(p3); p.push_back(p4); p.push_back(p5); p.push_back(p6); p.push_back(p7); p.push_back(p8); p.push_back(p9); p.push_back(p10); p.push_back(p11); p.push_back(p12); p.push_back(p13); p.push_back(p14); p.push_back(p15); p.push_back(p16); p.push_back(p17); p.push_back(p18); p.push_back(p19); p.push_back(p20); p.push_back(p21); p.push_back(p22); p.push_back(p23); p.push_back(p24); p.push_back(p25); p.push_back(p26);
+		int x;
 		Detector d(p, Vector(.0, .0), 1.0);
-		assert_eq(d.segment_intersections(Point(6, 1), Point(1, 3)), 2);
-		assert_eq(d.segment_intersections(Point(6, 1), Point(4, 2)), 1);
-		assert_eq(d.segment_intersections(Point(6, 1), Point(2, 3)), 1);
+		assert_eq(d.segment_intersections(Point(6, 1), Point(1, 3), x), 2);
+		assert_eq(d.segment_intersections(Point(6, 1), Point(4, 2), x), 1);
+		assert_eq(d.segment_intersections(Point(6, 1), Point(2, 3), x), 1);
 
-		assert_eq(d.segment_intersections(Point(3, 11), Point(9, 1)), 6);
+		assert_eq(d.segment_intersections(Point(3, 11), Point(9, 1), x), 6);
 
-		assert_eq(d.segment_intersections(Point(4, 0), Point(4, 2)), 1);
-		assert_eq(d.segment_intersections(Point(5, 1), Point(7, 3)), 2);
-		assert_eq(d.segment_intersections(Point(7, 3), Point(5, 1)), 0);
-		assert_eq(d.segment_intersections(Point(8, 1), Point(8, 6)), 2);
-		assert_eq(d.segment_intersections(Point(8, 6), Point(8, 1)), 2);
+		assert_eq(d.segment_intersections(Point(4, 0), Point(4, 2), x), 1);
+		assert_eq(d.segment_intersections(Point(5, 1), Point(7, 3), x), 2);
+		assert_eq(d.segment_intersections(Point(7, 3), Point(5, 1), x), 0);
+		assert_eq(d.segment_intersections(Point(8, 1), Point(8, 6), x), 2);
+		assert_eq(d.segment_intersections(Point(8, 6), Point(8, 1), x), 2);
+		assert_eq(d.segment_intersections(Point(7, 5), Point(5.5, 5), x), 1);
 
 		Path o(false);
 		o.push_back(p26);
@@ -89,7 +91,7 @@ public:
 		c.push_back(p3);
 		Detector od(o, Vector(.0, .0), 1.0);
 		Detector cd(c, Vector(.0, .0), 1.0);
-		assert_eq(cd.segment_intersections(Point(6, 1), Point(0, 4)), 2);
-		assert_eq(od.segment_intersections(Point(6, 1), Point(0, 4)), 1);
+		assert_eq(cd.segment_intersections(Point(6, 1), Point(0, 4), x), 2);
+		assert_eq(od.segment_intersections(Point(6, 1), Point(0, 4), x), 1);
 	}
 };

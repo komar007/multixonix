@@ -14,3 +14,13 @@ double line_point_distance(const Point& l1, const Point& l2, const Point& p)
 {
 	return abs(turning_determinant(l1, l2, p)) / (l2 - l1).length();
 }
+
+double path_area(const Path& path)
+{
+	if (!path.closed)
+		throw domain_error("open path in path_area");
+	double area = .0;
+	for (auto i = path.begin(), j = i+1; i != path.end(); ++i, ++j)
+		area += (i->y + j->y)/2 * (j->x - i->x);
+	return abs(area);
+}

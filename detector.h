@@ -28,8 +28,7 @@ private:
 public:
 	void add_segment(const Path::const_iterator& pit);
 	Detector(const Path& _p, const Vector& _offset, double _block_size);
-	int segment_intersections(const Point& p1, const Point& p2);
-	const hash_type& get_hash() { return hash; }
+	int segment_intersections(const Point& p1, const Point& p2, int& out_where) const;
 	Location to_location(const Point& p) const;
 	Point to_point(const Location& l) const;
 	friend class BfsPainter;
