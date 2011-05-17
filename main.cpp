@@ -6,7 +6,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "future_classes.h"
+#include "actor.h"
 
 using namespace std;
 

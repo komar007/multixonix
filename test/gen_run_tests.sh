@@ -2,6 +2,7 @@
 
 testsuites=`ls tests/*.h`
 
+echo '#define private public'
 echo '#include "tester.h"'
 for ts in $testsuites; do
 	echo '#include "'$ts'"'

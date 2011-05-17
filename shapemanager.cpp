@@ -3,14 +3,16 @@
 using namespace std;
 
 Shape::Shape(const Path& _path, bool with_detector)
-	: path(_path)
+	: id(-1)
+	, path(_path)
 	, detector(NULL)
 {
 	initialize(with_detector);
 }
 
 Shape::Shape(Path&& _path, bool with_detector)
-	: path(move(_path))
+	: id(-1)
+	, path(move(_path))
 	, detector(NULL)
 {
 	initialize(with_detector);
@@ -65,15 +67,6 @@ ShapeCreationInfo::ShapeCreationInfo(const Path& _path)
 	, path(NULL)
 {
 	path = new Path(_path);
-}
-ShapeCreationInfo::ShapeCreationInfo()
-	: trace_id(-1)
-	, shape_id(-1)
-	, shape_start(-1)
-	, shape_end(-1)
-	, shape_dir(FORWARD)
-	, path(NULL)
-{
 }
 const ShapeCreationInfo& ShapeCreationInfo::operator=(const ShapeCreationInfo& o)
 {
@@ -153,13 +146,6 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id)
 	if (type != DESTROYED)
 		throw domain_error("type != DESTROYED in destruction message");
 }
-ShapeMessage::ShapeMessage()
-	: type(DUMMY)
-	, id(-1)
-	, info(NULL)
-	, extension_point(NULL)
-{
-}
 ShapeMessage::~ShapeMessage()
 {
 	delete info;
@@ -215,7 +201,6 @@ int ShapeManager::start_trace(const Point& point)
 	Path p(false);
 	p.push_back(point);
 	int id = add_shape(p);
-	notify(ShapeMessage(CREATED, last_id, ShapeCreationInfo(p)));
 	return id;
 }
 void ShapeManager::extend_trace_impl(int id, const Point& point)

@@ -11,6 +11,11 @@ public:
 	ShapeMessage last_m;
 	const ShapeManager *last_manager;
 
+	Obs()
+		: last_m(DESTROYED, -1)
+	{
+	}
+
 	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg)
 	{
 		last_manager = dynamic_cast<const ShapeManager*>(&obj);
