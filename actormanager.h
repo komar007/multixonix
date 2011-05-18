@@ -4,6 +4,8 @@
 #include "geometry.h"
 #include "observer.h"
 
+class ActorManager;
+
 class Actor : public Observable<Point> {
 private:
 	int id;
@@ -16,6 +18,7 @@ public:
 	virtual ~Actor();
 	void step();
 	bool has_moved();
+	friend class ActorManager;
 };
 
 class Player : public Actor {
@@ -23,4 +26,34 @@ class Player : public Actor {
 };
 
 class Ball : public Actor {
+};
+
+enum ActorMessageType {
+	CREATED,
+	DESTROYED,
+	MOVED
+};
+class ActorMessage {
+private:
+	ActorMessageType type;
+	int id;
+	const Actor *actor;
+	Point *pos;
+public:
+	ActorMessage(const ActorMessage& o);
+	const ActorMessage& operator=(const ActorMessage& o);
+	ActorMessage(ActorMessageType _type, int _id, const Actor& _actor);
+	ActorMessage(ActorMessageType _type, int _id, const Point& _pos);
+	ActorMessage(ActorMessageType _type, int _id);
+};
+
+class ActorManager : public Observer<Point> {
+private:
+	std::unordered_map<int, Actor*> actors;
+	int last_id;
+public:
+	virtual void update(const Observable<Point>& obj, const Point& msg);
+	ActorManager();
+	int add_actor(const Actor& actor);
+	void destroy_actor(int id);
 };
