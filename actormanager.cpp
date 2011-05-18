@@ -19,7 +19,8 @@ void Actor::step()
 {
 	old_pos = pos;
 	pos += Vector(cos(angle), sin(angle)) * speed;
-	notify(pos);
+	if (has_moved())
+		notify(pos);
 }
 bool Actor::has_moved()
 {
@@ -85,6 +86,21 @@ ActorManager::ActorManager()
 {
 }
 
+Actor& ActorManager::get_actor_ref(int id) throw (out_of_range)
+{
+	auto actor_it = actors.find(id);
+	if (actor_it == actors.end())
+		throw out_of_range("no such actor in ShapeManager");
+	return *actor_it->second;
+}
+const Actor& ActorManager::get_actor_ref(int id) const throw (out_of_range)
+{
+	auto actor_it = actors.find(id);
+	if (actor_it == actors.end())
+		throw out_of_range("no such actor in ShapeManager");
+	return *actor_it->second;
+}
+
 int ActorManager::add_actor_impl(const Actor& actor)
 {
 	Actor *new_actor = NULL;
@@ -99,7 +115,8 @@ int ActorManager::add_actor_impl(const Actor& actor)
 int ActorManager::add_actor(const Actor& actor)
 {
 	int id = add_actor_impl(actor);
-	notify(ActorMessage(ActorMessage::CREATED, id, actor));
+	const Actor& new_actor = get_actor_ref(id);
+	notify(ActorMessage(ActorMessage::CREATED, id, new_actor));
 	return id;
 }
 

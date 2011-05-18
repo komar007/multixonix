@@ -39,6 +39,18 @@ inline std::ostream& operator<<(std::ostream& o, const ShapeMessage::ShapeMessag
 	}
 	return o;
 }
+inline std::ostream& operator<<(std::ostream& o, const ActorMessage::ActorMessageType& m)
+{
+	switch (m) {
+	case ActorMessage::CREATED:
+		o << "CREATED"; break;
+	case ActorMessage::DESTROYED:
+		o << "DESTROYED"; break;
+	case ActorMessage::MOVED:
+		o << "MOVED"; break;
+	}
+	return o;
+}
 
 inline std::ostream& operator<<(std::ostream& o, const Path& p)
 {

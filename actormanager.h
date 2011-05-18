@@ -9,11 +9,12 @@ class ActorManager;
 class Actor : public Observable<Point> {
 private:
 	int id;
-	double angle;
-	double speed;
 	Point pos;
 	Point old_pos;
 public:
+	double angle;
+	double speed;
+
 	Actor(const Point _pos = Point(.0, .0));
 	virtual ~Actor();
 	void step();
@@ -58,6 +59,8 @@ private:
 public:
 	virtual void update(const Observable<Point>& obj, const Point& msg);
 	ActorManager();
+	Actor& get_actor_ref(int id) throw (std::out_of_range);
+	const Actor& get_actor_ref(int id) const throw (std::out_of_range);
 	int add_actor(const Actor& actor);
 	void destroy_actor(int id);
 };
