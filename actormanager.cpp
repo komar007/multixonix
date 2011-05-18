@@ -4,13 +4,12 @@ using namespace std;
 
 Actor::Actor(const Point _pos)
 	: id(-1)
-	, angle(.0)
-	, speed(.0)
 	, pos(_pos)
 	, old_pos(_pos)
+	, angle(.0)
+	, speed(.0)
 {
 }
-
 Actor::~Actor()
 {
 }
@@ -35,22 +34,6 @@ ActorMessage::ActorMessage(const ActorMessage& o)
 {
 	if (o.pos)
 		pos = new Point(*o.pos);
-}
-const ActorMessage& ActorMessage::operator=(const ActorMessage& o)
-{
-	type  = o.type;
-	id    = o.id;
-	actor = o.actor;
-	if (o.pos) {
-		if (pos)
-			*pos = *o.pos;
-		else
-			pos = new Point(*o.pos);
-	} else {
-		delete pos;
-		pos = NULL;
-	}
-	return *this;
 }
 ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor)
 	: type(_type)
@@ -80,10 +63,33 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id)
 	if (type != ActorMessage::DESTROYED)
 		throw domain_error("type != DESTROYED in destruction message");
 }
+const ActorMessage& ActorMessage::operator=(const ActorMessage& o)
+{
+	type  = o.type;
+	id    = o.id;
+	actor = o.actor;
+	if (o.pos) {
+		if (pos)
+			*pos = *o.pos;
+		else
+			pos = new Point(*o.pos);
+	} else {
+		delete pos;
+		pos = NULL;
+	}
+	return *this;
+}
 
 ActorManager::ActorManager()
 	: last_id(0)
 {
+}
+ActorManager::~ActorManager()
+{
+	for (auto it = actors.begin(); it != actors.end(); ++it) {
+		it->second->detach(*this);
+		delete it->second;
+	}
 }
 
 Actor& ActorManager::get_actor_ref(int id) throw (out_of_range)

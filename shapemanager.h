@@ -88,15 +88,14 @@ private:
 	std::unordered_map<int, Shape*> shapes;
 	int last_id;
 
+	Shape& get_shape_ref(int id) throw (std::out_of_range);
 	int add_shape_impl(const Path& path, int id = -1);
 	void destroy_shape_impl(int id);
 	void extend_trace_impl(int id, const Point& point);
-	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, ShapeCreationInfo::ShapeDirection dir, int id = -1);
-	Shape& get_shape_ref(int id) throw (std::out_of_range);
+	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, Direction dir, int id = -1);
 public:
 	ShapeManager(bool _with_detector);
 	~ShapeManager();
-	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
 
 	int num_shapes() const { return shapes.size(); }
 	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
@@ -105,6 +104,7 @@ public:
 	int start_trace(const Point& point);
 	void extend_trace(int id, const Point& point);
 	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
+	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
 
 	class iterator {
 	private:

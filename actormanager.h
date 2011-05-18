@@ -59,6 +59,7 @@ private:
 public:
 	virtual void update(const Observable<Point>& obj, const Point& msg);
 	ActorManager();
+	~ActorManager();
 	Actor& get_actor_ref(int id) throw (std::out_of_range);
 	const Actor& get_actor_ref(int id) const throw (std::out_of_range);
 	int add_actor(const Actor& actor);

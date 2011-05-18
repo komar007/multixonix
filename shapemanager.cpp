@@ -9,7 +9,6 @@ Shape::Shape(const Path& _path, bool with_detector)
 {
 	initialize(with_detector);
 }
-
 Shape::Shape(Path&& _path, bool with_detector)
 	: id(-1)
 	, path(move(_path))
@@ -17,11 +16,14 @@ Shape::Shape(Path&& _path, bool with_detector)
 {
 	initialize(with_detector);
 }
-
 void Shape::initialize(bool with_detector)
 {
 	if (with_detector)
 		detector = new Detector(path, Vector(0, 0), 0.05); //FIXME: choose sensible values
+}
+Shape::~Shape()
+{
+	delete detector;
 }
 
 void Shape::extend(const Point& point) throw (domain_error)
@@ -31,11 +33,6 @@ void Shape::extend(const Point& point) throw (domain_error)
 	path.push_back(point);
 	if (detector && path.size() >= 2)
 		detector->add_segment(path.nth_point(path.size()-2));
-}
-
-Shape::~Shape()
-{
-	delete detector;
 }
 
 ShapeCreationInfo::ShapeCreationInfo(const ShapeCreationInfo& o)
@@ -102,30 +99,6 @@ ShapeMessage::ShapeMessage(const ShapeMessage& o)
 	if (o.extension_point)
 		extension_point = new Point(*o.extension_point);
 }
-const ShapeMessage& ShapeMessage::operator=(const ShapeMessage& o)
-{
-	type = o.type;
-	id = o.id;
-	if (o.info) {
-		if (info)
-			*info = *o.info;
-		else
-			info = new ShapeCreationInfo(*o.info);
-	} else {
-		delete info;
-		info = NULL;
-	}
-	if (o.extension_point) {
-		if (extension_point)
-			*extension_point = *o.extension_point;
-		else
-			extension_point = new Point(*o.extension_point);
-	} else {
-		delete extension_point;
-		extension_point = NULL;
-	}
-	return *this;
-}
 ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info)
 	: type(_type)
 	, id(_id)
@@ -155,6 +128,30 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id)
 	if (type != ShapeMessage::DESTROYED)
 		throw domain_error("type != DESTROYED in destruction message");
 }
+const ShapeMessage& ShapeMessage::operator=(const ShapeMessage& o)
+{
+	type = o.type;
+	id = o.id;
+	if (o.info) {
+		if (info)
+			*info = *o.info;
+		else
+			info = new ShapeCreationInfo(*o.info);
+	} else {
+		delete info;
+		info = NULL;
+	}
+	if (o.extension_point) {
+		if (extension_point)
+			*extension_point = *o.extension_point;
+		else
+			extension_point = new Point(*o.extension_point);
+	} else {
+		delete extension_point;
+		extension_point = NULL;
+	}
+	return *this;
+}
 ShapeMessage::~ShapeMessage()
 {
 	delete info;
@@ -166,7 +163,6 @@ ShapeManager::ShapeManager(bool _with_detector)
 	, last_id(0)
 {
 }
-
 ShapeManager::~ShapeManager()
 {
 	for (auto it = shapes.begin(); it != shapes.end(); ++it)
@@ -205,6 +201,7 @@ int ShapeManager::add_shape(const Path& path)
 	notify(ShapeMessage(ShapeMessage::CREATED, id, ShapeCreationInfo(path)));
 	return id;
 }
+
 int ShapeManager::start_trace(const Point& point)
 {
 	Path p(false);
@@ -212,6 +209,7 @@ int ShapeManager::start_trace(const Point& point)
 	int id = add_shape(p);
 	return id;
 }
+
 void ShapeManager::extend_trace_impl(int id, const Point& point)
 {
 	Shape& shape = get_shape_ref(id);
@@ -222,6 +220,7 @@ void ShapeManager::extend_trace(int id, const Point& point)
 	extend_trace_impl(id, point);
 	notify(ShapeMessage(ShapeMessage::EXTENDED, id, point));
 }
+
 int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, Info::ShapeDirection dir, int id)
 {
 	Path p(trace);
@@ -272,6 +271,7 @@ pair<int, int> ShapeManager::cut_shape(int trace_id, int id, int s1, int s2)
 				ShapeCreationInfo(trace_id, id, s2, s1, Direction::REVERSE)));
 	return ids;
 }
+
 void ShapeManager::destroy_shape_impl(int id)
 {
 	auto shape_it = shapes.find(id);
