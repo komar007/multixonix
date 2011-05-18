@@ -7,27 +7,8 @@
 #include "geometry.h"
 #include "observer.h"
 #include "actor.h"
+#include "messages.h"
 #include <stdexcept>
-
-class ActorMessage {
-public:
-	enum ActorMessageType {
-		CREATED,
-		DESTROYED,
-		MOVED
-	};
-private:
-	ActorMessageType type;
-	int id;
-	const Actor *actor;
-	Point *pos;
-public:
-	ActorMessage(const ActorMessage& o);
-	const ActorMessage& operator=(const ActorMessage& o);
-	ActorMessage(ActorMessageType _type, int _id, const Actor& _actor);
-	ActorMessage(ActorMessageType _type, int _id, const Point& _pos);
-	ActorMessage(ActorMessageType _type, int _id);
-};
 
 class ActorManager : public Observer<Point>, public Observable<ActorMessage> {
 private:

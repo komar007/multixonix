@@ -2,64 +2,11 @@
 
 using namespace std;
 
-ActorMessage::ActorMessage(const ActorMessage& o)
-	: type(o.type)
-	, id(o.id)
-	, actor(o.actor)
-	, pos(NULL)
-{
-	if (o.pos)
-		pos = new Point(*o.pos);
-}
-ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor)
-	: type(_type)
-	, id(_id)
-	, actor(&_actor)
-	, pos(NULL)
-{
-	if (type != ActorMessage::CREATED)
-		throw domain_error("type != CREATED in creation message");
-}
-ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos)
-	: type(_type)
-	, id(_id)
-	, actor(NULL)
-	, pos(NULL)
-{
-	if (type != ActorMessage::MOVED)
-		throw domain_error("type != MOVED in motion message");
-	pos = new Point(_pos);
-}
-ActorMessage::ActorMessage(ActorMessageType _type, int _id)
-	: type(_type)
-	, id(_id)
-	, actor(NULL)
-	, pos(NULL)
-{
-	if (type != ActorMessage::DESTROYED)
-		throw domain_error("type != DESTROYED in destruction message");
-}
-const ActorMessage& ActorMessage::operator=(const ActorMessage& o)
-{
-	type  = o.type;
-	id    = o.id;
-	actor = o.actor;
-	if (o.pos) {
-		if (pos)
-			*pos = *o.pos;
-		else
-			pos = new Point(*o.pos);
-	} else {
-		delete pos;
-		pos = NULL;
-	}
-	return *this;
-}
-
 ActorManager::ActorManager()
 	: last_id(0)
 {
 }
+
 ActorManager::~ActorManager()
 {
 	for (auto it = actors.begin(); it != actors.end(); ++it) {
