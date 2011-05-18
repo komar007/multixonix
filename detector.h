@@ -7,8 +7,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <deque>
-#include <algorithm>
-#include <stdexcept>
 
 class BfsPainter;
 
@@ -26,10 +24,37 @@ private:
 
 	void update_bounding_box(const Path::const_iterator& pit);
 public:
-	void add_segment(const Path::const_iterator& pit);
+	//! Construct a detector for a path
+	//!
+	//! @param _p path
+	//! @param _offset point in which the relative block's coordinates
+	//! will start
+	//! @param _block_size size of block's side
 	Detector(const Path& _p, const Vector& _offset, double _block_size);
+	//! \brief Add path's segment to the structure
+	//!
+	//! This is used to add a segment to the structure if the path has
+	//! changed since the time the Detector was created (this happens in
+	//! case of traces, which expand)
+	//! @param pit iterator to segment's start point
+	void add_segment(const Path::const_iterator& pit);
+	//! \brief find intersections between traced path and a segment
+	//!
+	//! @param p1,p2 start and end point of the segment
+	//! @param out_where reference to integer, where the number of
+	//! one of the intersected segments will be stored
+	//! @return number of intersections
+	// FIXME: add support for multiple intersections, change doc
 	int segment_intersections(const Point& p1, const Point& p2, int& out_where) const;
+	//! \brief Find location (coordinates) of a block containing a point
+	//!
+	//! @param p point
+	//! @return block's location
 	Location to_location(const Point& p) const;
+	//! \brief Find coordinates of a block's origin
+	//!
+	//! @param l block's location
+	//! @return block's origin's coordinates
 	Point to_point(const Location& l) const;
 	friend class BfsPainter;
 };
@@ -37,7 +62,7 @@ public:
 //! \brief A BFS rasterizer state machine
 //!
 //! A BFS segment drawing algorithm implementation as a state machine used to
-//! iterate over all squares which intersect with a segment
+//! iterate over all squares which intersect with a line segment
 class BfsPainter {
 private:
 	const Detector& detector;
@@ -49,6 +74,11 @@ private:
 	std::unordered_set<Location> visited;
 	Location next();
 public:
+	//! \brief Construct a BfsPainter
+	//!
+	//! @param a,b endpoints of the segment to rasterize
+	//! @param _detector Detector from which to take information about
+	//! block size and offset
 	BfsPainter(const Point& a, const Point& b, const Detector& _detector);
 
 	class iterator : public std::iterator<std::input_iterator_tag, Location> {

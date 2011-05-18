@@ -110,6 +110,7 @@ public:
 	{
 		return Vector(dx - o.dx, dy - o.dy);
 	}
+	//! Scale by a scalar
 	Vector operator*(double k)
 	{
 		return Vector(dx*k, dy*k);

@@ -41,24 +41,14 @@ void Detector::update_bounding_box(const Path::const_iterator& pit)
 		box.second.y = pit->y;
 }
 
-namespace std {
-	template <>
-	class hash<Path::const_iterator> : private std::hash<unsigned long> {
-	public:
-		size_t operator()(const Path::const_iterator& it) const
-		{
-			return std::hash<unsigned long>::operator()(reinterpret_cast<unsigned long>(&*it));
-		}
-	};
-};
-
 typedef take_second<Location, Path::const_iterator> take_iter;
+typedef unordered_set<Path::const_iterator> iterator_set;
 
 int Detector::segment_intersections(const Point& s1, const Point& s2, int& out_where) const
 {
 	BfsPainter pt(s1, s2, *this);
-	unordered_set<Path::const_iterator> p_iterators;
-	insert_iterator<unordered_set<Path::const_iterator>> inserter(p_iterators, p_iterators.end());
+	iterator_set p_iterators;
+	insert_iterator<iterator_set> inserter(p_iterators, p_iterators.end());
 	for (BfsPainter::iterator b = pt.begin(); b != pt.end(); ++b) {
 		auto range = hash.equal_range(*b);
 		transform(range.first, range.second, inserter, take_iter());
@@ -106,6 +96,7 @@ BfsPainter::BfsPainter(const Point& a, const Point& b, const Detector& _detector
 	visited.insert(loc_beg);
 }
 
+// FIXME: optimize
 Location BfsPainter::next()
 {
 	const Location ret = queue.front();

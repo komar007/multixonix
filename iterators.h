@@ -156,6 +156,25 @@ public:
 	friend class forward_cyclic_iterator<T>;
 };
 
+namespace std {
+	template <typename T>
+	class hash<forward_cyclic_iterator<T>> : private std::hash<unsigned long> {
+	public:
+		size_t operator()(const forward_cyclic_iterator<T>& it) const
+		{
+			return std::hash<unsigned long>::operator()(reinterpret_cast<unsigned long>(&*it));
+		}
+	};
+	template <typename T>
+	class hash<reverse_cyclic_iterator<T>> : private std::hash<unsigned long> {
+	public:
+		size_t operator()(const reverse_cyclic_iterator<T>& it) const
+		{
+			return std::hash<unsigned long>::operator()(reinterpret_cast<unsigned long>(&*it));
+		}
+	};
+};
+
 //! \brief const pointer-map iterator
 //!
 //! const iterator used to iterate over all elements of a map of pointers to
