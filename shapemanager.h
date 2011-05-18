@@ -91,11 +91,12 @@ private:
 	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, ShapeDirection dir, int id = -1);
 	Shape& get_shape_ref(int id) throw (std::out_of_range);
 public:
-	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
-	int num_shapes() const { return shapes.size(); }
-	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	ShapeManager(bool _with_detector);
 	~ShapeManager();
+	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
+
+	int num_shapes() const { return shapes.size(); }
+	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	int add_shape(const Path& path);
 	void destroy_shape(int id);
 	int start_trace(const Point& point);

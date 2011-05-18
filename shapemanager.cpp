@@ -80,6 +80,9 @@ const ShapeCreationInfo& ShapeCreationInfo::operator=(const ShapeCreationInfo& o
 			*path = *o.path;
 		else
 			path = new Path(*o.path);
+	} else {
+		delete path;
+		path = NULL;
 	}
 	return *this;
 }
@@ -108,12 +111,18 @@ const ShapeMessage& ShapeMessage::operator=(const ShapeMessage& o)
 			*info = *o.info;
 		else
 			info = new ShapeCreationInfo(*o.info);
+	} else {
+		delete info;
+		info = NULL;
 	}
 	if (o.extension_point) {
 		if (extension_point)
 			*extension_point = *o.extension_point;
 		else
 			extension_point = new Point(*o.extension_point);
+	} else {
+		delete extension_point;
+		extension_point = NULL;
 	}
 	return *this;
 }
