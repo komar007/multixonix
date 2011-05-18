@@ -32,17 +32,12 @@ public:
 	friend class ShapeManager;
 };
 
-enum ShapeMessageType {
-	CREATED,
-	DESTROYED,
-	EXTENDED,
-	DUMMY
-};
-enum ShapeDirection {
-	FORWARD,
-	REVERSE
-};
 class ShapeCreationInfo {
+public:
+	enum ShapeDirection {
+		FORWARD,
+		REVERSE
+	};
 private:
 	int trace_id;
 	int shape_id;
@@ -53,7 +48,7 @@ private:
 public:
 	ShapeCreationInfo(const ShapeCreationInfo& o);
 	//! ShapeCreationInfo informing that a shape was created from trace and shape
-	ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end, enum ShapeDirection shape_dir);
+	ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end, ShapeDirection shape_dir);
 	//! ShapeCreationInfo informing that a shape was created from scratch
 	ShapeCreationInfo(const Path& _path);
 	const ShapeCreationInfo& operator=(const ShapeCreationInfo& o);
@@ -61,6 +56,12 @@ public:
 	friend class ShapeManager;
 };
 class ShapeMessage {
+public:
+	enum ShapeMessageType {
+		CREATED,
+		DESTROYED,
+		EXTENDED
+	};
 private:
 	ShapeMessageType type;
 	int id;
@@ -81,6 +82,8 @@ public:
 
 class ShapeManager : public Observable<ShapeMessage>, public Observer<ShapeMessage> {
 private:
+	typedef ShapeCreationInfo Info;
+	typedef Info::ShapeDirection Direction;
 	bool with_detector;
 	std::unordered_map<int, Shape*> shapes;
 	int last_id;
@@ -88,7 +91,7 @@ private:
 	int add_shape_impl(const Path& path, int id = -1);
 	void destroy_shape_impl(int id);
 	void extend_trace_impl(int id, const Point& point);
-	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, ShapeDirection dir, int id = -1);
+	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, ShapeCreationInfo::ShapeDirection dir, int id = -1);
 	Shape& get_shape_ref(int id) throw (std::out_of_range);
 public:
 	ShapeManager(bool _with_detector);

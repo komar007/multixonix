@@ -132,7 +132,7 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationI
 	, info(NULL)
 	, extension_point(NULL)
 {
-	if (type != CREATED)
+	if (type != ShapeMessage::CREATED)
 		throw domain_error("type != CREATED in creation message");
 	info = new ShapeCreationInfo(_info);
 }
@@ -142,7 +142,7 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const Point& _extens
 	, info(NULL)
 	, extension_point(NULL)
 {
-	if (type != EXTENDED)
+	if (type != ShapeMessage::EXTENDED)
 		throw domain_error("type != EXTENDED in extension message");
 	extension_point = new Point(_extension_point);
 }
@@ -152,7 +152,7 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id)
 	, info(NULL)
 	, extension_point(NULL)
 {
-	if (type != DESTROYED)
+	if (type != ShapeMessage::DESTROYED)
 		throw domain_error("type != DESTROYED in destruction message");
 }
 ShapeMessage::~ShapeMessage()
@@ -202,7 +202,7 @@ int ShapeManager::add_shape_impl(const Path& path, int id)
 int ShapeManager::add_shape(const Path& path)
 {
 	int id = add_shape_impl(path);
-	notify(ShapeMessage(CREATED, id, ShapeCreationInfo(path)));
+	notify(ShapeMessage(ShapeMessage::CREATED, id, ShapeCreationInfo(path)));
 	return id;
 }
 int ShapeManager::start_trace(const Point& point)
@@ -220,9 +220,9 @@ void ShapeManager::extend_trace_impl(int id, const Point& point)
 void ShapeManager::extend_trace(int id, const Point& point)
 {
 	extend_trace_impl(id, point);
-	notify(ShapeMessage(EXTENDED, id, point));
+	notify(ShapeMessage(ShapeMessage::EXTENDED, id, point));
 }
-int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, ShapeDirection dir, int id)
+int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, Info::ShapeDirection dir, int id)
 {
 	Path p(trace);
 	p.closed = true;
@@ -237,13 +237,13 @@ int ShapeManager::cut_shape_impl(const Path& trace, const Path& shape, int s1, i
 		else
 			only_reverse = true;
 	}
-	if (dir == FORWARD && !only_reverse) {
+	if (dir == Direction::FORWARD && !only_reverse) {
 		Path::const_iterator it_end = s1 != s2 ?
 			shape.nth_point(s1+1) :
 			shape.nth_point(s1+1).next_cycle();
 		for (Path::const_iterator it = shape.nth_point(s2+1); it != it_end; ++it)
 			p.push_back(*it);
-	} else if (dir == REVERSE && !only_forward) {
+	} else if (dir == Direction::REVERSE && !only_forward) {
 		Path::const_reverse_iterator it_end = s1 != s2 ?
 			shape.nth_point(s1) :
 			shape.nth_point(s1).next_cycle();
@@ -264,12 +264,12 @@ pair<int, int> ShapeManager::cut_shape(int trace_id, int id, int s1, int s2)
 	const Path& trace = get_shape_ref(trace_id).get_path();
 	const Path& shape = get_shape_ref(id).get_path();
 	pair<int, int> ids(-1, -1);
-	ids.first  = cut_shape_impl(trace, shape, s1, s2, FORWARD),
-	notify(ShapeMessage(CREATED, ids.first,
-				ShapeCreationInfo(trace_id, id, s2, s1, FORWARD)));
-	ids.second = cut_shape_impl(trace, shape, s1, s2, REVERSE);
-	notify(ShapeMessage(CREATED, ids.second,
-				ShapeCreationInfo(trace_id, id, s2, s1, REVERSE)));
+	ids.first  = cut_shape_impl(trace, shape, s1, s2, Direction::FORWARD),
+	notify(ShapeMessage(ShapeMessage::CREATED, ids.first,
+				ShapeCreationInfo(trace_id, id, s2, s1, Direction::FORWARD)));
+	ids.second = cut_shape_impl(trace, shape, s1, s2, Direction::REVERSE);
+	notify(ShapeMessage(ShapeMessage::CREATED, ids.second,
+				ShapeCreationInfo(trace_id, id, s2, s1, Direction::REVERSE)));
 	return ids;
 }
 void ShapeManager::destroy_shape_impl(int id)
@@ -283,13 +283,13 @@ void ShapeManager::destroy_shape_impl(int id)
 void ShapeManager:: destroy_shape(int id)
 {
 	destroy_shape_impl(id);
-	notify(ShapeMessage(DESTROYED, id));
+	notify(ShapeMessage(ShapeMessage::DESTROYED, id));
 }
 
 void ShapeManager::update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg)
 {
 	switch (msg.type) {
-	case CREATED:
+	case ShapeMessage::CREATED:
 		if (msg.info->path) {
 			add_shape_impl(*msg.info->path, msg.id);
 		} else {
@@ -303,13 +303,11 @@ void ShapeManager::update(const Observable<ShapeMessage>& obj, const ShapeMessag
 			);
 		}
 		break;
-	case DESTROYED:
+	case ShapeMessage::DESTROYED:
 		destroy_shape_impl(msg.id);
 		break;
-	case EXTENDED:
+	case ShapeMessage::EXTENDED:
 		extend_trace_impl(msg.id, *msg.extension_point);
-		break;
-	case DUMMY:
 		break;
 	}
 }

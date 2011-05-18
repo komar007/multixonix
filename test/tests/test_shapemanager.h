@@ -12,7 +12,7 @@ public:
 	const ShapeManager *last_manager;
 
 	Obs()
-		: last_m(DESTROYED, -1)
+		: last_m(ShapeMessage::DESTROYED, -1)
 	{
 	}
 
@@ -107,12 +107,12 @@ public:
 			assert_eq(one, fixture1);
 			assert_eq(two, fixture2);
 			assert_eq(w.last_m.id, ids.second);
-			assert_eq(w.last_m.type, CREATED);
+			assert_eq(w.last_m.type, ShapeMessage::CREATED);
 			assert_eq(w.last_m.info->trace_id, tid);
 			assert_eq(w.last_m.info->shape_id, id);
 			assert_eq(w.last_m.info->shape_start, 0);
 			assert_eq(w.last_m.info->shape_end, 0);
-			assert_eq(w.last_m.info->shape_dir, REVERSE);
+			assert_eq(w.last_m.info->shape_dir, ShapeCreationInfo::ShapeDirection::REVERSE);
 		}
 	}
 
@@ -124,7 +124,7 @@ public:
 		m.attach(w);
 		m.extend_trace(id, Point(2, 2));
 		assert_eq(w.last_m.id, id);
-		assert_eq(w.last_m.type, EXTENDED);
+		assert_eq(w.last_m.type, ShapeMessage::EXTENDED);
 		assert_eq(*w.last_m.extension_point, Point(2, 2));
 		m.extend_trace(id, Point(3, 3));
 		assert_eq(*w.last_m.extension_point, Point(3, 3));
@@ -137,7 +137,7 @@ public:
 		m.attach(w);
 		m.add_shape(p1);
 		assert_eq(w.last_manager, &m);
-		assert_eq(w.last_m.type, CREATED);
+		assert_eq(w.last_m.type, ShapeMessage::CREATED);
 		assert_eq(w.last_m.id, 1);
 		m.add_shape(p1);
 		assert_eq(w.last_m.id, 2);
