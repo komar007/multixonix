@@ -85,36 +85,7 @@ public:
 	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
 	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
 
-	class iterator {
-	private:
-		std::unordered_map<int, Shape*>::const_iterator i;
-	public:
-		iterator(const std::unordered_map<int, Shape*>::const_iterator& _i)
-			: i(_i)
-		{
-		}
-		iterator& operator++()
-		{
-			++i;
-			return *this;
-		}
-		const Shape& operator*()
-		{
-			return *i->second;
-		}
-		const Shape* operator->()
-		{
-			return i->second;
-		}
-		bool operator==(const iterator& o)
-		{
-			return i == o.i;
-		}
-		bool operator!=(const iterator& o)
-		{
-			return i != o.i;
-		}
-	};
+	typedef const_pointer_map_iterator<Shape> iterator;
 	iterator begin() const { return iterator(shapes.begin()); }
 	iterator end() const { return iterator(shapes.end()); }
 };

@@ -4,6 +4,7 @@
 //! \brief Special cyclic operator for vector used throughout the project
 
 #include <vector>
+#include <unordered_map>
 #ifdef DEBUG
 	#include <sstream>
 #endif
@@ -153,4 +154,68 @@ public:
 			return reverse_cyclic_iterator<T>(base::p, it, base::cycles);
 	}
 	friend class forward_cyclic_iterator<T>;
+};
+
+template <typename T, typename K = int>
+class const_pointer_map_iterator {
+private:
+	typename std::unordered_map<K, T*>::const_iterator i;
+public:
+	const_pointer_map_iterator(const typename std::unordered_map<K, T*>::const_iterator& _i)
+		: i(_i)
+	{
+	}
+	const_pointer_map_iterator& operator++()
+	{
+		++i;
+		return *this;
+	}
+	const T& operator*()
+	{
+		return *i->second;
+	}
+	const T* operator->()
+	{
+		return i->second;
+	}
+	bool operator==(const const_pointer_map_iterator& o)
+	{
+		return i == o.i;
+	}
+	bool operator!=(const const_pointer_map_iterator& o)
+	{
+		return i != o.i;
+	}
+};
+
+template <typename T, typename K = int>
+class pointer_map_iterator {
+private:
+	typename std::unordered_map<K, T*>::iterator i;
+public:
+	pointer_map_iterator(const typename std::unordered_map<K, T*>::iterator& _i)
+		: i(_i)
+	{
+	}
+	pointer_map_iterator& operator++()
+	{
+		++i;
+		return *this;
+	}
+	T& operator*()
+	{
+		return *i->second;
+	}
+	T* operator->()
+	{
+		return i->second;
+	}
+	bool operator==(const pointer_map_iterator& o)
+	{
+		return i == o.i;
+	}
+	bool operator!=(const pointer_map_iterator& o)
+	{
+		return i != o.i;
+	}
 };

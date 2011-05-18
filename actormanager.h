@@ -44,4 +44,8 @@ public:
 	const Actor& get_actor_ref(int id) const throw (std::out_of_range);
 	int add_actor(const Actor& actor);
 	void destroy_actor(int id);
+
+	typedef pointer_map_iterator<Actor> iterator;
+	iterator begin() { return iterator(actors.begin()); }
+	iterator end() { return iterator(actors.end()); }
 };
