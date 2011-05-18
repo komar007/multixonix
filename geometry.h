@@ -110,6 +110,10 @@ public:
 	{
 		return Vector(dx - o.dx, dy - o.dy);
 	}
+	Vector operator*(double k)
+	{
+		return Vector(dx*k, dy*k);
+	}
 	double length() const
 	{
 		return hypot(dx, dy);
@@ -128,10 +132,24 @@ inline Point operator +(const Point& p, const Vector& v)
 {
 	return Point(p.x + v.dx, p.y + v.dy);
 }
+//! Translate point by vector
+inline Point& operator +=(Point& p, const Vector& v)
+{
+	p.x += v.dx;
+	p.y += v.dy;
+	return p;
+}
 //! Translate point by minus vector
 inline Point operator -(const Point& p, const Vector& v)
 {
 	return Point(p.x - v.dx, p.y - v.dy);
+}
+//! Translate point by minus vector
+inline Point& operator -=(Point& p, const Vector& v)
+{
+	p.x -= v.dx;
+	p.y -= v.dy;
+	return p;
 }
 //@}
 
