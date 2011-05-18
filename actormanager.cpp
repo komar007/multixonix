@@ -17,14 +17,14 @@ ActorManager::~ActorManager()
 
 Actor& ActorManager::get_actor_ref(int id) throw (out_of_range)
 {
-	auto actor_it = actors.find(id);
+	const auto actor_it = actors.find(id);
 	if (actor_it == actors.end())
 		throw out_of_range("no such actor in ShapeManager");
 	return *actor_it->second;
 }
 const Actor& ActorManager::get_actor_ref(int id) const throw (out_of_range)
 {
-	auto actor_it = actors.find(id);
+	const auto actor_it = actors.find(id);
 	if (actor_it == actors.end())
 		throw out_of_range("no such actor in ShapeManager");
 	return *actor_it->second;
@@ -43,7 +43,7 @@ int ActorManager::add_actor_impl(const Actor& actor)
 }
 int ActorManager::add_actor(const Actor& actor)
 {
-	int id = add_actor_impl(actor);
+	const int id = add_actor_impl(actor);
 	const Actor& new_actor = get_actor_ref(id);
 	notify(ActorMessage(ActorMessage::CREATED, id, new_actor));
 	return id;
@@ -51,7 +51,7 @@ int ActorManager::add_actor(const Actor& actor)
 
 void ActorManager::destroy_actor_impl(int id)
 {
-	auto actor_it = actors.find(id);
+	const auto actor_it = actors.find(id);
 	if (actor_it == actors.end())
 		throw out_of_range("No such actor in destroy_actor");
 	actor_it->second->detach(*this);

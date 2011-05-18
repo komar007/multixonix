@@ -156,6 +156,10 @@ public:
 	friend class forward_cyclic_iterator<T>;
 };
 
+//! \brief const pointer-map iterator
+//!
+//! const iterator used to iterate over all elements of a map of pointers to
+//! elements
 template <typename T, typename K = int>
 class const_pointer_map_iterator {
 private:
@@ -188,6 +192,10 @@ public:
 	}
 };
 
+//! \brief non-const pointer-map iterator
+//!
+//! Iterator used to iterate over all elements of a map of pointers to
+//! elements
 template <typename T, typename K = int>
 class pointer_map_iterator {
 private:

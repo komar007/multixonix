@@ -74,7 +74,7 @@ ShapeMessage::ShapeMessage(const ShapeMessage& o)
 		extension_point = new Point(*o.extension_point);
 }
 
-ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info)
+ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, info(NULL)
@@ -85,7 +85,7 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationI
 	info = new ShapeCreationInfo(_info);
 }
 
-ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const Point& _extension_point)
+ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const Point& _extension_point) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, info(NULL)
@@ -96,7 +96,7 @@ ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id, const Point& _extens
 	extension_point = new Point(_extension_point);
 }
 
-ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id)
+ShapeMessage::ShapeMessage(ShapeMessageType _type, int _id) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, info(NULL)
@@ -150,7 +150,7 @@ ActorMessage::ActorMessage(const ActorMessage& o)
 		pos = new Point(*o.pos);
 }
 
-ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor)
+ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, actor(&_actor)
@@ -160,7 +160,7 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor)
 		throw domain_error("type != CREATED in creation message");
 }
 
-ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos)
+ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, actor(NULL)
@@ -171,7 +171,7 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos)
 	pos = new Point(_pos);
 }
 
-ActorMessage::ActorMessage(ActorMessageType _type, int _id)
+ActorMessage::ActorMessage(ActorMessageType _type, int _id) throw (domain_error)
 	: type(_type)
 	, id(_id)
 	, actor(NULL)

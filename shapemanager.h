@@ -21,8 +21,8 @@ private:
 
 	Shape& get_shape_ref(int id) throw (std::out_of_range);
 	int add_shape_impl(const Path& path, int id = -1);
-	void destroy_shape_impl(int id);
-	void extend_trace_impl(int id, const Point& point);
+	void destroy_shape_impl(int id) throw (std::out_of_range);
+	void extend_trace_impl(int id, const Point& point) throw (std::out_of_range);
 	int cut_shape_impl(const Path& trace, const Path& shape, int s1, int s2, Direction dir, int id = -1);
 public:
 	ShapeManager(bool _with_detector);
@@ -31,10 +31,10 @@ public:
 	int num_shapes() const { return shapes.size(); }
 	const Shape& get_shape_const_ref(int id) const throw (std::out_of_range);
 	int add_shape(const Path& path);
-	void destroy_shape(int id);
+	void destroy_shape(int id) throw (std::out_of_range);
 	int start_trace(const Point& point);
-	void extend_trace(int id, const Point& point);
-	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2);
+	void extend_trace(int id, const Point& point) throw (std::out_of_range);
+	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2) throw (std::out_of_range);
 	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
 
 	typedef const_pointer_map_iterator<Shape> iterator;

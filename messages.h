@@ -24,9 +24,9 @@ private:
 	Path *path;
 public:
 	ShapeCreationInfo(const ShapeCreationInfo& o);
-	//! ShapeCreationInfo informing that a shape was created from trace and shape
+	//! information that a shape was created from trace and shape
 	ShapeCreationInfo(int _trace_id, int _shape_id, int _shape_start, int _shape_end, ShapeDirection shape_dir);
-	//! ShapeCreationInfo informing that a shape was created from scratch
+	//! information that a shape was created from scratch
 	ShapeCreationInfo(const Path& _path);
 	const ShapeCreationInfo& operator=(const ShapeCreationInfo& o);
 	~ShapeCreationInfo();
@@ -46,12 +46,12 @@ private:
 	ShapeCreationInfo* info;
 	Point *extension_point;
 public:
-	//! ShapeMessage about shape creation
-	ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info);
-	//! ShapeMessage about trace extension
-	ShapeMessage(ShapeMessageType _type, int _id, const Point& _extension_point);
-	//! ShapeMessage about shape deletion
-	ShapeMessage(ShapeMessageType _type, int _id);
+	//! Message about shape creation
+	ShapeMessage(ShapeMessageType _type, int _id, const ShapeCreationInfo& _info) throw (std::domain_error);
+	//! Message about trace extension
+	ShapeMessage(ShapeMessageType _type, int _id, const Point& _extension_point) throw (std::domain_error);
+	//! Message about shape deletion
+	ShapeMessage(ShapeMessageType _type, int _id) throw (std::domain_error);
 	ShapeMessage(const ShapeMessage& o);
 	const ShapeMessage& operator=(const ShapeMessage& o);
 	~ShapeMessage();
@@ -76,8 +76,11 @@ private:
 public:
 	ActorMessage(const ActorMessage& o);
 	const ActorMessage& operator=(const ActorMessage& o);
-	ActorMessage(ActorMessageType _type, int _id, const Actor& _actor);
-	ActorMessage(ActorMessageType _type, int _id, const Point& _pos);
-	ActorMessage(ActorMessageType _type, int _id);
+	//! Message about actor creation
+	ActorMessage(ActorMessageType _type, int _id, const Actor& _actor) throw (std::domain_error);
+	//! Message about actor motion
+	ActorMessage(ActorMessageType _type, int _id, const Point& _pos) throw (std::domain_error);
+	//! Message about actor destruction
+	ActorMessage(ActorMessageType _type, int _id) throw (std::domain_error);
 };
 //! @}
