@@ -1,15 +1,24 @@
 #include "actormanager.h"
 
-Actor::Actor(ActorType _type, const Point _pos)
-	: type(_type)
-	, id(-1)
+using namespace std;
+
+Actor::Actor(const Point _pos)
+	: id(-1)
+	, angle(.0)
+	, speed(.0)
 	, pos(_pos)
 	, old_pos(_pos)
 {
 }
 
+Actor::~Actor()
+{
+}
+
 void Actor::step()
 {
+	old_pos = pos;
+	pos += Vector(cos(angle), sin(angle)) * speed;
 }
 bool Actor::has_moved()
 {
