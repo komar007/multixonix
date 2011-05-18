@@ -49,7 +49,7 @@ int ActorManager::add_actor(const Actor& actor)
 	return id;
 }
 
-void ActorManager::destroy_actor_impl(int id)
+void ActorManager::destroy_actor_impl(int id) throw (out_of_range)
 {
 	const auto actor_it = actors.find(id);
 	if (actor_it == actors.end())
@@ -58,7 +58,7 @@ void ActorManager::destroy_actor_impl(int id)
 	delete actor_it->second;
 	actors.erase(actor_it);
 }
-void ActorManager::destroy_actor(int id)
+void ActorManager::destroy_actor(int id) throw (out_of_range)
 {
 	destroy_actor_impl(id);
 	notify(ActorMessage(ActorMessage::DESTROYED, id));
