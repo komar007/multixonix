@@ -27,17 +27,15 @@ inline std::ostream& operator<<(std::ostream& o, const Point& p)
 	return o;
 }
 
-inline std::ostream& operator<<(std::ostream& o, const ShapeMessageType& m)
+inline std::ostream& operator<<(std::ostream& o, const ShapeMessage::ShapeMessageType& m)
 {
 	switch (m) {
-	case CREATED:
+	case ShapeMessage::CREATED:
 		o << "CREATED"; break;
-	case DESTROYED:
+	case ShapeMessage::DESTROYED:
 		o << "DESTROYED"; break;
-	case EXTENDED:
+	case ShapeMessage::EXTENDED:
 		o << "EXTENDED"; break;
-	case DUMMY:
-		o << "DUMMY"; break;
 	}
 	return o;
 }

@@ -19,6 +19,7 @@ void Actor::step()
 {
 	old_pos = pos;
 	pos += Vector(cos(angle), sin(angle)) * speed;
+	notify(pos);
 }
 bool Actor::has_moved()
 {
@@ -56,7 +57,7 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Actor& _actor)
 	, actor(&_actor)
 	, pos(NULL)
 {
-	if (type != CREATED)
+	if (type != ActorMessage::CREATED)
 		throw domain_error("type != CREATED in creation message");
 }
 ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos)
@@ -65,6 +66,8 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id, const Point& _pos)
 	, actor(NULL)
 	, pos(NULL)
 {
+	if (type != ActorMessage::MOVED)
+		throw domain_error("type != MOVED in motion message");
 	pos = new Point(_pos);
 }
 ActorMessage::ActorMessage(ActorMessageType _type, int _id)
@@ -73,7 +76,7 @@ ActorMessage::ActorMessage(ActorMessageType _type, int _id)
 	, actor(NULL)
 	, pos(NULL)
 {
-	if (type != DESTROYED)
+	if (type != ActorMessage::DESTROYED)
 		throw domain_error("type != DESTROYED in destruction message");
 }
 
@@ -82,7 +85,7 @@ ActorManager::ActorManager()
 {
 }
 
-int ActorManager::add_actor(const Actor& actor)
+int ActorManager::add_actor_impl(const Actor& actor)
 {
 	Actor *new_actor = NULL;
 	if (const Player *p = dynamic_cast<const Player*>(&actor))
@@ -93,18 +96,30 @@ int ActorManager::add_actor(const Actor& actor)
 	actors.insert(make_pair(++last_id, new_actor));
 	return new_actor->id = last_id;
 }
+int ActorManager::add_actor(const Actor& actor)
+{
+	int id = add_actor_impl(actor);
+	notify(ActorMessage(ActorMessage::CREATED, id, actor));
+	return id;
+}
 
-void ActorManager::destroy_actor(int id)
+void ActorManager::destroy_actor_impl(int id)
 {
 	auto actor_it = actors.find(id);
 	if (actor_it == actors.end())
 		throw out_of_range("No such actor in destroy_actor");
+	actor_it->second->detach(*this);
 	delete actor_it->second;
 	actors.erase(actor_it);
+}
+void ActorManager::destroy_actor(int id)
+{
+	destroy_actor_impl(id);
+	notify(ActorMessage(ActorMessage::DESTROYED, id));
 }
 
 void ActorManager::update(const Observable<Point>& obj, const Point& msg)
 {
 	const Actor& actor = dynamic_cast<const Actor&>(obj);
-	// TODO use the information about actor move
+	notify(ActorMessage(ActorMessage::MOVED, actor.id, actor.pos));
 }

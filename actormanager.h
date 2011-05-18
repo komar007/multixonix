@@ -28,12 +28,13 @@ class Player : public Actor {
 class Ball : public Actor {
 };
 
-enum ActorMessageType {
-	CREATED,
-	DESTROYED,
-	MOVED
-};
 class ActorMessage {
+public:
+	enum ActorMessageType {
+		CREATED,
+		DESTROYED,
+		MOVED
+	};
 private:
 	ActorMessageType type;
 	int id;
@@ -47,10 +48,13 @@ public:
 	ActorMessage(ActorMessageType _type, int _id);
 };
 
-class ActorManager : public Observer<Point> {
+class ActorManager : public Observer<Point>, public Observable<ActorMessage> {
 private:
 	std::unordered_map<int, Actor*> actors;
 	int last_id;
+
+	int add_actor_impl(const Actor& actor);
+	void destroy_actor_impl(int id);
 public:
 	virtual void update(const Observable<Point>& obj, const Point& msg);
 	ActorManager();
