@@ -1,5 +1,8 @@
 #pragma once
 
+//! @file
+//! \brief Shape class, representing the game's world
+
 #include "geometry.h"
 #include "detector.h"
 

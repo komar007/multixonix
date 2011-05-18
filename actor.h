@@ -1,5 +1,8 @@
 #pragma once
 
+//! @file
+//! \brief Actor class, responsible for representing a movable object in the game
+
 #include "geometry.h"
 #include "observer.h"
 

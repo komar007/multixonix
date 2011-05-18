@@ -1,5 +1,8 @@
 #pragma once
 
+//! @file
+//! \brief ActorManager class responsible for managing and replicating a set of actors
+
 #include <string>
 #include "geometry.h"
 #include "observer.h"
