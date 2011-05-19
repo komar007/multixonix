@@ -44,7 +44,23 @@ void Detector::update_bounding_box(const Path::const_iterator& pit)
 typedef take_second<Location, Path::const_iterator> take_iter;
 typedef unordered_set<Path::const_iterator> iterator_set;
 
-int Detector::segment_intersections(const Point& s1, const Point& s2, int& out_where) const
+class Detector::manhattan_point_sorter {
+private:
+	Point origin;
+public:
+	manhattan_point_sorter(const Point& _origin)
+		: origin(_origin)
+	{
+	}
+	bool operator()(const Intersection& i1, const Intersection& i2)
+	{
+		const double dist1 = abs(i1.second.x - origin.x) + abs(i1.second.y - origin.y),
+		             dist2 = abs(i2.second.x - origin.x) + abs(i2.second.y - origin.y);
+		return dist1 < dist2;
+	}
+};
+
+int Detector::segment_intersections(const Point& s1, const Point& s2, vector<Intersection>& out_edges) const
 {
 	BfsPainter pt(s1, s2, *this);
 	iterator_set p_iterators;
@@ -54,14 +70,17 @@ int Detector::segment_intersections(const Point& s1, const Point& s2, int& out_w
 		transform(range.first, range.second, inserter, take_iter());
 	}
 	int nintersections = 0;
+	out_edges.clear();
 	for (auto i = p_iterators.begin(); i != p_iterators.end(); ++i) {
 		const Path::const_iterator& p1 = *i;
 		const Path::const_iterator& p2 = *i + 1;
 		if (segment_path_segment_collision(s1, s2, *p1, *p2)) {
 			++nintersections;
-			out_where = p1.get_index();
+			Point inter = segment_segment_intersection(s1, s2, *p1, *p2);
+			out_edges.push_back(make_pair(p1, inter));
 		}
 	}
+	sort(out_edges.begin(), out_edges.end(), manhattan_point_sorter(s1));
 	return nintersections;
 }
 

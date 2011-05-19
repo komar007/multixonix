@@ -3,6 +3,7 @@
 #include "collision.h"
 #include <cstdlib>
 #include <cstdio>
+#include <vector>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -27,9 +28,9 @@ int main()
 	m.attach(q);
 	m.add_shape(Path(true, vector<Point>{{1,1}, {9,1}, {9,9}, {1,9}}));
 	bool running = true;
-	Point pos(5, 0.5);
-	Point old_pos(5,0.5);
-	double angle = M_PI/2 + 0.01;
+	Point pos(5, 9.5);
+	Point old_pos(5,9.5);
+	double angle = -M_PI/2;
 	int trace = -1;
 	Point balls[] = {{2,3}, {3,4}, {5, 7}};
 	double ball_angles[] = {0.2, 0.5, 1.2};
@@ -43,15 +44,14 @@ int main()
 				check_trace = true;
 				continue;
 			}
-			int where;
+			vector<Detector::Intersection> where;
 			if (shape.get_detector().segment_intersections(old_pos, pos, where) > 0) {
-				Point inter = segment_segment_intersection(old_pos, pos, *shape.get_path().nth_point(where), *shape.get_path().nth_point(where+1));
 				if (trace == -1) {
-					trace = m.start_trace(inter);
-					beg = where;
+					trace = m.start_trace(where[0].second);
+					beg = where[0].first.get_index();
 				} else {
-					m.extend_trace(trace, inter);
-					pair<int, int> ids = m.cut_shape(trace, shape.get_id(), beg, where);
+					m.extend_trace(trace, where[0].second);
+					pair<int, int> ids = m.cut_shape(trace, shape.get_id(), beg, where[0].first.get_index());
 					m.destroy_shape(shape.get_id());
 					m.destroy_shape(trace);
 					check_trace = false;
@@ -60,7 +60,7 @@ int main()
 					const Shape& s2 = m.get_shape_const_ref(ids.second);
 					int nballs1=0, nballs2=0;
 					for (int i = 0; i < 3; ++i) {
-						int where;
+						vector<Detector::Intersection> where;
 						if (s1.get_detector().segment_intersections(balls[i], Point(-1, -1), where) % 2 == 1)
 							nballs1++;
 						if (s2.get_detector().segment_intersections(balls[i], Point(20, 20), where) % 2 == 1)
@@ -104,11 +104,11 @@ int main()
 			balls[i].y += 0.02*sin(ball_angles[i]);
 			if (check_trace) {
 				const Shape& tr = m.get_shape_const_ref(trace);
-				int where;
+				vector<Detector::Intersection> where;
 				if (tr.get_detector().segment_intersections(old, balls[i], where) > 0) {
 					m.destroy_shape(trace);
 					trace = -1;
-					pos = {5, 0.5};
+					pos = {5, 9.5};
 					break;
 				}
 			}
@@ -116,10 +116,10 @@ int main()
 				const Shape& sh = *it;
 				if (trace == sh.get_id())
 					continue;
-				int where;
+				vector<Detector::Intersection> where;
 				if (sh.get_detector().segment_intersections(old, balls[i], where) > 0) {
-					Point p1 = *sh.get_path().nth_point(where);
-					Point p2 = *sh.get_path().nth_point(where+1);
+					Point p1 = *where[0].first;
+					Point p2 = *(where[0].first+1);
 					double b = asin((p2.y - p1.y) / (p2 - p1).length());
 					ball_angles[i] = - ball_angles[i] + 2*b;
 					if (ball_angles[i] > 2*M_PI)

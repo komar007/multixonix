@@ -64,7 +64,7 @@ public:
 		Point p25(5, 3);
 		Point p26(4, 1);
  		p.push_back(p1); p.push_back(p2); p.push_back(p3); p.push_back(p4); p.push_back(p5); p.push_back(p6); p.push_back(p7); p.push_back(p8); p.push_back(p9); p.push_back(p10); p.push_back(p11); p.push_back(p12); p.push_back(p13); p.push_back(p14); p.push_back(p15); p.push_back(p16); p.push_back(p17); p.push_back(p18); p.push_back(p19); p.push_back(p20); p.push_back(p21); p.push_back(p22); p.push_back(p23); p.push_back(p24); p.push_back(p25); p.push_back(p26);
-		int x;
+		vector<Detector::Intersection> x;
 		Detector d(p, Vector(.0, .0), 1.0);
 		assert_eq(d.segment_intersections(Point(6, 1), Point(1, 3), x), 2);
 		assert_eq(d.segment_intersections(Point(6, 1), Point(4, 2), x), 1);

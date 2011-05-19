@@ -4,6 +4,7 @@
 //! \brief Path-segment collision detectection structure
 
 #include "geometry.h"
+#include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <deque>
@@ -14,8 +15,11 @@ class BfsPainter;
 //!
 //! Structure used to quickly detect collisions between a path and a segment
 class Detector {
+public:
+	typedef std::pair<Path::const_iterator, Point> Intersection;
 private:
 	typedef std::unordered_multimap<Location, Path::const_iterator> hash_type;
+	class manhattan_point_sorter;
 	hash_type hash;
 	const Path& p;
 	const Vector offset;
@@ -41,11 +45,11 @@ public:
 	//! \brief find intersections between traced path and a segment
 	//!
 	//! @param p1,p2 start and end point of the segment
-	//! @param out_where reference to integer, where the number of
-	//! one of the intersected segments will be stored
+	//! @param out_edges reference to vector of intersections, where iterators
+	//! to intersected edges will be stored together with intersection
+	//! points
 	//! @return number of intersections
-	// FIXME: add support for multiple intersections, change doc
-	int segment_intersections(const Point& p1, const Point& p2, int& out_where) const;
+	int segment_intersections(const Point& s1, const Point& s2, std::vector<Intersection>& out_edges) const;
 	//! \brief Find location (coordinates) of a block containing a point
 	//!
 	//! @param p point
