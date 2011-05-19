@@ -17,18 +17,18 @@
 template <typename T>
 class cyclic_iterator {
 protected:
-	const std::vector<T>& p;
+	const std::vector<T>* p;
 	int i;
 	short cycles;
 	cyclic_iterator(const std::vector<T>& _p, int start, short _cycles)
-		: p(_p)
+		: p(&_p)
 		, i(start)
 		, cycles(_cycles)
 	{
 	}
 public:
 	cyclic_iterator(const std::vector<T>& _p, int start)
-		: p(_p)
+		: p(&_p)
 		, i(start)
 		, cycles(0)
 	{
@@ -44,24 +44,24 @@ public:
 	const T& operator*() const
 	{
 #ifdef DEBUG
-		if (i >= (int)p.size() || i < 0) {
+		if (i >= (int)p->size() || i < 0) {
 			std::stringstream ss;
-			ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+			ss << "iterator out of range: " << i << " (size: " << p->size() << ")";
 			throw std::out_of_range(ss.str());
 		}
 #endif
-		return p[i];
+		return (*p)[i];
 	}
 	const T* operator->() const
 	{
 #ifdef DEBUG
-		if (i >= (int)p.size() || i < 0) {
+		if (i >= (int)p->size() || i < 0) {
 			std::stringstream ss;
-			ss << "iterator out of range: " << i << " (size: " << p.size() << ")";
+			ss << "iterator out of range: " << i << " (size: " << p->size() << ")";
 			throw std::out_of_range(ss.str());
 		}
 #endif
-		return &p[i];
+		return &(*p)[i];
 	}
 	int get_index() const
 	{
@@ -82,17 +82,17 @@ private:
 	{
 	}
 public:
-	forward_cyclic_iterator(const reverse_cyclic_iterator<T>& f_it)
-		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
+	forward_cyclic_iterator(const reverse_cyclic_iterator<T>& r_it)
+		: cyclic_iterator<T>(*r_it.p, r_it.i, r_it.cycles)
 	{
 	}
 	forward_cyclic_iterator next_cycle() const
 	{
-		return forward_cyclic_iterator(base::p, base::i, base::cycles+1);
+		return forward_cyclic_iterator(*base::p, base::i, base::cycles+1);
 	}
 	forward_cyclic_iterator& operator++()
 	{
-		if (++base::i == (int)base::p.size()) {
+		if (++base::i == (int)base::p->size()) {
 			base::i = 0;
 			++base::cycles;
 		}
@@ -106,10 +106,10 @@ public:
 	forward_cyclic_iterator<T> operator+(size_t o) const
 	{
 		const int it = base::i + o;
-		if (it >= (int)base::p.size())
-			return forward_cyclic_iterator<T>(base::p, it - base::p.size(), base::cycles + 1);
+		if (it >= (int)base::p->size())
+			return forward_cyclic_iterator<T>(*base::p, it - base::p->size(), base::cycles + 1);
 		else
-			return forward_cyclic_iterator<T>(base::p, it, base::cycles);
+			return forward_cyclic_iterator<T>(*base::p, it, base::cycles);
 	}
 	friend class reverse_cyclic_iterator<T>;
 };
@@ -125,17 +125,17 @@ private:
 	}
 public:
 	reverse_cyclic_iterator(const forward_cyclic_iterator<T>& f_it)
-		: cyclic_iterator<T>(f_it.p, f_it.i, f_it.cycles)
+		: cyclic_iterator<T>(*f_it.p, f_it.i, f_it.cycles)
 	{
 	}
 	reverse_cyclic_iterator next_cycle() const
 	{
-		return reverse_cyclic_iterator(base::p, base::i, base::cycles+1);
+		return reverse_cyclic_iterator(*base::p, base::i, base::cycles+1);
 	}
 	reverse_cyclic_iterator& operator++()
 	{
 		if (--base::i == -1) {
-			base::i = base::p.size() - 1;
+			base::i = base::p->size() - 1;
 			++base::cycles;
 		}
 		return *this;
@@ -149,9 +149,9 @@ public:
 	{
 		const int it = base::i - o;
 		if (it < 0)
-			return reverse_cyclic_iterator<T>(base::p, it + base::p.size(), base::cycles + 1);
+			return reverse_cyclic_iterator<T>(*base::p, it + base::p->size(), base::cycles + 1);
 		else
-			return reverse_cyclic_iterator<T>(base::p, it, base::cycles);
+			return reverse_cyclic_iterator<T>(*base::p, it, base::cycles);
 	}
 	friend class forward_cyclic_iterator<T>;
 };
