@@ -17,7 +17,7 @@ public:
 	const State *last_state;
 private:
 	std::ostream& ostr;
-	virtual void update(const Observable<bool>& obj, const bool& msg)
+	virtual void update(Observable<bool>& obj, const bool& msg)
 	{
 		const State& s = dynamic_cast<const State&>(obj);
 		last_state = &s;

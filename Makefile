@@ -3,6 +3,7 @@ CC=g++ -g -ggdb -pg -std=c++0x -O2 -lm $(INCLUDE)
 LIBS=-lsfml-system -lsfml-graphics -lsfml-window
 WARN=-Wall -Wextra
 SOURCES=geometry.cpp\
+	utility.cpp\
 	collision.cpp\
 	main.cpp\
 	detector.cpp\
@@ -14,7 +15,7 @@ SOURCES=geometry.cpp\
 	xonix.cpp\
 	test/run_tests.cpp
 
-OBJS=geometry.o collision.o detector.o shape.o shapemanager.o actor.o actormanager.o messages.o xonix.o
+OBJS=geometry.o utility.o collision.o detector.o shape.o shapemanager.o actor.o actormanager.o messages.o xonix.o
 
 all: dep
 	make main

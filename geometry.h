@@ -258,3 +258,9 @@ double line_point_distance(const Point& l1, const Point& l2, const Point& p);
 //! @param path input path
 //! @return path's nonnegative area
 double path_area(const Path& path);
+
+//! \brief converts an angle to a range from 0 to 2*M_PI
+//!
+//! @param angle input angle
+//! @return angle in range [0, 2*M_PI)
+double normalized_angle(double angle);

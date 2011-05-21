@@ -16,7 +16,7 @@ public:
 	{
 	}
 
-	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg)
+	virtual void update(Observable<ShapeMessage>& obj, const ShapeMessage& msg)
 	{
 		last_manager = dynamic_cast<const ShapeManager*>(&obj);
 		last_m = msg;

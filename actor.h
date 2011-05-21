@@ -31,7 +31,7 @@ public:
 	double angle;
 	double speed;
 
-	Actor(const Point _pos);
+	Actor(const Point _pos = Point(.0, .0));
 	virtual ~Actor();
 	const Point& get_oldpos() const { return old_pos; }
 	const Point& get_pos() const { return pos; }

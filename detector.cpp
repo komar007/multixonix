@@ -4,9 +4,6 @@
 
 using namespace std;
 
-const double pinf =  numeric_limits<double>::max(),
-             ninf = -numeric_limits<double>::max();
-
 Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	: hash()
 	, p(_p)

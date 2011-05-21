@@ -24,3 +24,13 @@ double path_area(const Path& path)
 		area += (i->y + j->y)/2 * (j->x - i->x);
 	return abs(area);
 }
+
+double normalized_angle(double angle)
+{
+	if (angle < .0)
+		return angle + 2*M_PI;
+	else if (angle >= 2*M_PI)
+		return angle - 2*M_PI;
+	else
+		return angle;
+}

@@ -20,7 +20,7 @@ int main()
 	Xonix x(Xonix::MASTER);
 	Ball ball(Point(5, 5));
 	ball.angle = 0.2;
-	ball.speed = 0.02;
+	ball.speed = 0.04;
 	x.add_actor(ball);
 	bool running = true;
 	while (running) {

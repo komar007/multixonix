@@ -16,7 +16,7 @@ public:
 	{
 	}
 
-	virtual void update(const Observable<ActorMessage>& obj, const ActorMessage& msg)
+	virtual void update(Observable<ActorMessage>& obj, const ActorMessage& msg)
 	{
 		last_manager = dynamic_cast<const ActorManager*>(&obj);
 		last_m = msg;
@@ -50,7 +50,9 @@ public:
 		m_b.step();
 		assert_eq(obs.last_m.type, ActorMessage::CREATED);
 		m_b.speed = 1;
+		m_b.begin();
 		m_b.step();
+		m_b.commit();
 		assert_eq(obs.last_m.type, ActorMessage::MOVED);
 		assert_eq(obs.last_m.id, 2);
 		assert_eq(*obs.last_m.pos, Point(1,0));

@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <iterator>
 
+extern const double pinf, ninf;
+
 template <typename It>
 struct dereference {
 	auto operator()(const It& it) -> decltype(*it)

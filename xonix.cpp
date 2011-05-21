@@ -1,25 +1,35 @@
 #include "xonix.h"
+#include <vector>
 
 using namespace std;
 
 BallController::BallController(const ShapeManager& _shapes)
 	: shapes(_shapes)
+	, last_collision(pinf, pinf)
 {
 }
 
-void BallController::update(Observable<PosMsg>& obj, const PosMsg&)
+void BallController::update(Observable<PosMsg>& obj, const PosMsg& msg)
 {
 	Actor& actor = dynamic_cast<Actor&>(obj);
 	for (auto shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
 		vector<Detector::Intersection> ints;
-		if (shape_it->intersections(actor.get_oldpos(), actor.get_pos(), ints) == 0)
+		if (shape_it->intersections(msg.old_pos, msg.cur_pos, ints) == 0)
 			continue;
-		const Detector::Intersection& inter = *ints.begin();
+		vector<Detector::Intersection>::const_iterator int_it;
+		for (int_it = ints.begin(); int_it != ints.end(); ++int_it)
+			if (Vector(int_it->second, last_collision).length() > 0.00001)
+				break;
+		if (int_it == ints.end())
+			continue;
+		const Detector::Intersection& inter = *int_it;
 		const Vector wall(*inter.first, *(inter.first+1));
-		const double wall_angle = asin(wall.dy / wall.length());
-		const double extra_dist = Vector(inter.second, actor.get_pos()).length();
-		actor.angle = 2*wall_angle - actor.angle;
-		actor.set_pos(inter.second + Vector::dir(actor.angle) * extra_dist);
+		const double wall_angle = atan(wall.dy / wall.dx);
+		const double post_dist = Vector(inter.second, msg.cur_pos).length();
+		last_collision = inter.second;
+		actor.angle = normalized_angle(2*wall_angle - actor.angle);
+		actor.set_pos(inter.second);
+		actor.set_pos(inter.second + Vector::dir(actor.angle) * post_dist);
 	}
 }
 
@@ -32,9 +42,9 @@ Xonix::Xonix(Mode _mode)
 	shapes.attach(*this);
 	actors.attach(*this);
 	Path start_shape(true);
-	start_shape.push_back(Point(1, 1));
-	start_shape.push_back(Point(9, 1));
-	start_shape.push_back(Point(9, 9));
+	start_shape.push_back(Point(2, 1));
+	start_shape.push_back(Point(9, 5));
+	start_shape.push_back(Point(9, 6));
 	start_shape.push_back(Point(1, 9));
 	shapes.add_shape(start_shape);
 }

@@ -8,6 +8,7 @@
 class BallController : public Observer<PosMsg> {
 private:
 	const ShapeManager& shapes;
+	Point last_collision;
 public:
 	BallController(const ShapeManager& _shapes);
 	virtual void update(Observable<PosMsg>& obj, const PosMsg&);
