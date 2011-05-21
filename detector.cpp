@@ -4,8 +4,8 @@
 
 using namespace std;
 
-const double pinf =  numeric_limits<double>::infinity(),
-             ninf = -numeric_limits<double>::infinity();
+const double pinf =  numeric_limits<double>::max(),
+             ninf = -numeric_limits<double>::max();
 
 Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	: hash()
@@ -15,29 +15,34 @@ Detector::Detector(const Path& _p, const Vector& _offset, double _block_size)
 	, box(Point(pinf, pinf), Point(ninf, ninf))
 {
 	for (Path::const_iterator i = p.begin(); i != p.end(); ++i) {
-		add_segment(i);
+		add_segment_impl(i);
 		update_bounding_box(i);
 	}
 	if (!p.closed && p.size() > 0)
-		update_bounding_box(p.nth_point(p.size()-1));
+		update_bounding_box(p.end());
 }
 
-void Detector::add_segment(const Path::const_iterator& pit)
+void Detector::add_segment_impl(const Path::const_iterator& pit)
 {
 	BfsPainter pt(*pit, *(pit+1), *this);
 	for (BfsPainter::iterator l = pt.begin(); l != pt.end(); ++l)
 		hash.insert(hash_type::value_type(*l, pit));
+}
+void Detector::add_segment(const Path::const_iterator& pit)
+{
+	add_segment_impl(pit);
+	update_bounding_box(pit+1);
 }
 
 void Detector::update_bounding_box(const Path::const_iterator& pit)
 {
 	if (pit->x < box.first.x)
 		box.first.x = pit->x;
-	else if (pit->x > box.second.x)
+	if (pit->x > box.second.x)
 		box.second.x = pit->x;
 	if (pit->y < box.first.y)
 		box.first.y = pit->y;
-	else if (pit->y > box.second.y)
+	if (pit->y > box.second.y)
 		box.second.y = pit->y;
 }
 
@@ -62,6 +67,9 @@ public:
 
 int Detector::segment_intersections(const Point& s1, const Point& s2, vector<Intersection>& out_edges) const
 {
+	out_edges.clear();
+	if (!point_in_rect(s1, box) && !point_in_rect(s2, box))
+		return 0;
 	BfsPainter pt(s1, s2, *this);
 	iterator_set p_iterators;
 	insert_iterator<iterator_set> inserter(p_iterators, p_iterators.end());
@@ -70,7 +78,6 @@ int Detector::segment_intersections(const Point& s1, const Point& s2, vector<Int
 		transform(range.first, range.second, inserter, take_iter());
 	}
 	int nintersections = 0;
-	out_edges.clear();
 	for (auto i = p_iterators.begin(); i != p_iterators.end(); ++i) {
 		const Path::const_iterator& p1 = *i;
 		const Path::const_iterator& p2 = *i + 1;

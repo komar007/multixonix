@@ -10,7 +10,7 @@
 #include "messages.h"
 #include <stdexcept>
 
-class ActorManager : public Observer<Point>, public Observable<ActorMessage> {
+class ActorManager : public Observer<CommitMsg>, public Observable<ActorMessage> {
 private:
 	std::unordered_map<int, Actor*> actors;
 	int last_id;
@@ -18,7 +18,7 @@ private:
 	int add_actor_impl(const Actor& actor);
 	void destroy_actor_impl(int id) throw (std::out_of_range);
 public:
-	virtual void update(const Observable<Point>& obj, const Point& msg);
+	virtual void update(const Observable<CommitMsg>& obj, const CommitMsg&);
 	ActorManager();
 	~ActorManager();
 	//! \brief Returns reference to an actor of given id

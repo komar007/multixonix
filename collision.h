@@ -7,6 +7,8 @@
 
 //! Checks if point p is inside a rectangle, whose upper-left corner is r1 and lower-right corner is \param r2
 bool point_in_rect(const Point& p, const Point& r1, const Point& r2);
+//! Checks if point p is inside rectangle \param r
+bool point_in_rect(const Point& p, const Rect& r);
 
 //! \brief Tests intersection between line and segment
 //!

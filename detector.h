@@ -26,6 +26,7 @@ private:
 	const double block_size;
 	Rect box;
 
+	void add_segment_impl(const Path::const_iterator& pit);
 	void update_bounding_box(const Path::const_iterator& pit);
 public:
 	//! Construct a detector for a path

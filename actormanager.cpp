@@ -64,7 +64,7 @@ void ActorManager::destroy_actor(int id) throw (out_of_range)
 	notify(ActorMessage(ActorMessage::DESTROYED, id));
 }
 
-void ActorManager::update(const Observable<Point>& obj, const Point& msg)
+void ActorManager::update(const Observable<CommitMsg>& obj, const CommitMsg&)
 {
 	const Actor& actor = dynamic_cast<const Actor&>(obj);
 	notify(ActorMessage(ActorMessage::MOVED, actor.id, actor.pos));

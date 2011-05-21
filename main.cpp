@@ -126,7 +126,7 @@ int main()
 						ball_angles[i] -= 2*M_PI;
 					if (ball_angles[i] < 0)
 						ball_angles[i] += 2*M_PI;
-					balls[i] = old + Vector(0.03*cos(ball_angles[i]), 0.03*sin(ball_angles[i]));
+					balls[i] = where[0].second + Vector(0.0001*cos(ball_angles[i]), 0.0001*sin(ball_angles[i]));
 				}
 			}
 			draw_circle(app, balls[i], sf::Color(0, 0, 255));

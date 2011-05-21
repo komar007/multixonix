@@ -6,20 +6,26 @@
 #include "geometry.h"
 #include "observer.h"
 
+class CommitMsg
+{
+};
+
 class ActorManager;
 
-class Actor : public Observable<Point> {
+class Actor : public Observable<CommitMsg> {
 private:
 	int id;
-	Point pos;
 	Point old_pos;
+	bool committed;
 public:
+	Point pos;
 	double angle;
 	double speed;
 
 	Actor(const Point _pos = Point(.0, .0));
 	virtual ~Actor();
 	void step();
+	void commit();
 	bool has_moved();
 	friend class ActorManager;
 };
