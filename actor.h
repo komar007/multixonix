@@ -31,7 +31,7 @@ public:
 	double angle;
 	double speed;
 
-	Actor(const Point _pos = Point(.0, .0));
+	Actor(const Point _pos);
 	virtual ~Actor();
 	const Point& get_oldpos() const { return old_pos; }
 	const Point& get_pos() const { return pos; }
@@ -44,7 +44,12 @@ public:
 };
 
 class Player : public Actor {
+private:
 	std::string name;
+public:
+	int trace_id;
+
+	Player(const Point _pos = Point(.0, .0));
 };
 
 class Ball : public Actor {

@@ -22,6 +22,11 @@ int main()
 	ball.angle = 0.2;
 	ball.speed = 0.04;
 	x.add_actor(ball);
+	Player player(Point(5,1));
+	player.angle = 1.5;
+	player.speed = 0.04;
+	int player_id = x.add_actor(player);
+	Player& rplayer = dynamic_cast<Player&>(x.get_actors().get_actor_ref(player_id));
 	bool running = true;
 	while (running) {
 		x.step();
@@ -56,8 +61,10 @@ int main()
 		if (input.IsKeyDown(sf::Key::Up)) {
 		}
 		if (input.IsKeyDown(sf::Key::Left)) {
+			rplayer.angle -= 0.05;
 		}
 		if (input.IsKeyDown(sf::Key::Right)) {
+			rplayer.angle += 0.05;
 		}
 		sf::Sleep(0.02);
 	}
