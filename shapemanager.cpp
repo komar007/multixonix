@@ -139,7 +139,7 @@ throw (out_of_range)
 	notify(ShapeMessage(ShapeMessage::DESTROYED, id));
 }
 
-void ShapeManager::update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg)
+void ShapeManager::update(Observable<ShapeMessage>& obj, const ShapeMessage& msg)
 {
 	switch (msg.type) {
 	case ShapeMessage::CREATED:

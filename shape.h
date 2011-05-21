@@ -5,6 +5,7 @@
 
 #include "geometry.h"
 #include "detector.h"
+#include <stdexcept>
 
 class ShapeManager;
 
@@ -23,7 +24,7 @@ public:
 	~Shape();
 	int get_id() const { return id; }
 	const Path& get_path() const { return path; }
-	const Detector& get_detector() const { return *detector; }
+	int intersections(const Point& s1, const Point& s2, std::vector<Detector::Intersection>& out_edges) const throw (std::logic_error);
 	void extend(const Point& point) throw (std::domain_error);
 	friend class ShapeManager;
 };

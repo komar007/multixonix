@@ -2,9 +2,9 @@
 
 Actor::Actor(const Point _pos)
 	: id(-1)
+	, pos(_pos)
 	, old_pos(_pos)
 	, committed(true)
-	, pos(_pos)
 	, angle(.0)
 	, speed(.0)
 {
@@ -14,23 +14,38 @@ Actor::~Actor()
 {
 }
 
+void Actor::begin()
+{
+	committed = false;
+	old_pos = pos;
+}
+
+const Point& Actor::set_pos(const Point& _pos)
+{
+	PosMsg m(pos, _pos);
+	pos = _pos;
+	if (!committed)
+		Observable<PosMsg>::notify(m);
+	return pos;
+}
 void Actor::step()
 {
-	if (committed) {
-		old_pos = pos;
-		committed = false;
-	}
-	pos += Vector(cos(angle), sin(angle)) * speed;
+	set_pos(pos + Vector(cos(angle), sin(angle)) * speed);
 }
 
 void Actor::commit()
 {
 	committed = true;
 	if (has_moved())
-		notify(CommitMsg());
+		Observable<CommitMsg>::notify(CommitMsg());
 }
 
 bool Actor::has_moved()
 {
 	return pos != old_pos;
+}
+
+Ball::Ball(const Point _pos)
+	: Actor(_pos)
+{
 }

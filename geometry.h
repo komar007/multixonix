@@ -94,9 +94,14 @@ public:
 		, dy(.0f)
 	{
 	}
-	Vector(float _dx, float _dy)
+	Vector(double _dx, double _dy)
 		: dx(_dx)
 		, dy(_dy)
+	{
+	}
+	Vector(const Point& p1, const Point& p2)
+		: dx(p2.x - p1.x)
+		, dy(p2.y - p1.y)
 	{
 	}
 
@@ -118,6 +123,10 @@ public:
 	double length() const
 	{
 		return hypot(dx, dy);
+	}
+	static Vector dir(double angle)
+	{
+		return Vector(cos(angle), sin(angle));
 	}
 };
 

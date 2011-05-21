@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 
 template <typename M>
 class Observer;
@@ -17,7 +18,7 @@ protected:
 	void notify(const M& msg);
 public:
 	void attach(Observer<M>& obs);
-	void detach(Observer<M>& obs);
+	void detach(Observer<M>& obs) throw (std::out_of_range);
 	virtual ~Observable()
 	{
 	}
@@ -37,16 +38,18 @@ void Observable<M>::attach(Observer<M>& obs)
 	observers.push_back(&obs);
 }
 template <typename M>
-void Observable<M>::detach(Observer<M>& obs)
+void Observable<M>::detach(Observer<M>& obs) throw (std::out_of_range)
 {
 	auto obs_it = find(observers.begin(), observers.end(), &obs);
+	if (obs_it == observers.end())
+		throw std::out_of_range("observer not attached");
 	observers.erase(obs_it);
 }
 
 template <typename M>
 class Observer {
 private:
-	virtual void update(const Observable<M>& obj, const M& msg) = 0;
+	virtual void update(Observable<M>& obj, const M& msg) = 0;
 public:
 	friend void Observable<M>::notify(const M& msg);
 };

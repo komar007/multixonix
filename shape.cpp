@@ -24,6 +24,14 @@ void Shape::initialize(bool with_detector)
 		detector = new Detector(path, Vector(0, 0), 0.05); //FIXME: choose sensible values
 }
 
+int Shape::intersections(const Point& s1, const Point& s2, vector<Detector::Intersection>& out_edges) const
+throw (logic_error)
+{
+	if (!detector)
+		throw logic_error("intersections called on shape without detector");
+	return detector->segment_intersections(s1, s2, out_edges);
+}
+
 Shape::~Shape()
 {
 	delete detector;

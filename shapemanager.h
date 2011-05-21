@@ -60,7 +60,7 @@ public:
 	//! @return created trace's id
 	std::pair<int, int> cut_shape(int trace_id, int id, int s1, int s2) throw (std::out_of_range);
 
-	virtual void update(const Observable<ShapeMessage>& obj, const ShapeMessage& msg);
+	virtual void update(Observable<ShapeMessage>& obj, const ShapeMessage& msg);
 
 	typedef const_pointer_map_iterator<Shape> iterator;
 	iterator begin() const { return iterator(shapes.begin()); }

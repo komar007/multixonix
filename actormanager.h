@@ -18,7 +18,7 @@ private:
 	int add_actor_impl(const Actor& actor);
 	void destroy_actor_impl(int id) throw (std::out_of_range);
 public:
-	virtual void update(const Observable<CommitMsg>& obj, const CommitMsg&);
+	virtual void update(Observable<CommitMsg>& obj, const CommitMsg&);
 	ActorManager();
 	~ActorManager();
 	//! \brief Returns reference to an actor of given id
