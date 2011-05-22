@@ -53,5 +53,6 @@ Ball::Ball(const Point _pos)
 Player::Player(const Point _pos)
 	: Actor(_pos)
 	, trace_id(-1)
+	, trace_beg(-1)
 {
 }

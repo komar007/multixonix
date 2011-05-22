@@ -24,6 +24,7 @@ public:
 	~Shape();
 	int get_id() const { return id; }
 	const Path& get_path() const { return path; }
+	bool point_inside(const Point& p);
 	int intersections(const Point& s1, const Point& s2, std::vector<Detector::Intersection>& out_edges) const throw (std::logic_error);
 	void extend(const Point& point) throw (std::domain_error);
 	friend class ShapeManager;

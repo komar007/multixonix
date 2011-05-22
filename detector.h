@@ -43,6 +43,7 @@ public:
 	//! case of traces, which expand)
 	//! @param pit iterator to segment's start point
 	void add_segment(const Path::const_iterator& pit);
+	const Rect& get_box() const { return box; }
 	//! \brief find intersections between traced path and a segment
 	//!
 	//! @param p1,p2 start and end point of the segment

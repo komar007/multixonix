@@ -48,6 +48,7 @@ private:
 	std::string name;
 public:
 	int trace_id;
+	int trace_beg;
 
 	Player(const Point _pos = Point(.0, .0));
 };

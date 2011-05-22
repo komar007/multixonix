@@ -17,6 +17,7 @@ public:
 class PlayerController : public Observer<PosMsg> {
 private:
 	ShapeManager& shapes;
+	Point last_collision;
 public:
 	PlayerController(ShapeManager& _shapes);
 	virtual void update(Observable<PosMsg>& obj, const PosMsg& msg);

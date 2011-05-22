@@ -32,6 +32,15 @@ throw (logic_error)
 	return detector->segment_intersections(s1, s2, out_edges);
 }
 
+bool Shape::point_inside(const Point& p)
+{
+	if (!detector)
+		throw logic_error("point_inside called on shape without detector");
+	vector<Detector::Intersection> out;
+	int n = detector->segment_intersections(p, detector->get_box().first-Vector(1, 1), out);
+	return n % 2 == 1;
+}
+
 Shape::~Shape()
 {
 	delete detector;
